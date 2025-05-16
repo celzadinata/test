@@ -213,3 +213,13 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* Smooth scrolling for the entire page */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Prevent layout shifts during transitions */
+.navbar-container {
+  min-height: 60px;
+}
