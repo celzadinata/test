@@ -1,4 +1,4 @@
-export default function Berita() {
+export default function News() {
   return (
     <div>
       <h1>Beranda Berita</h1>
