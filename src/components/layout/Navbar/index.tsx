@@ -304,7 +304,7 @@ export default function Navbar() {
       </div>
 
       {/* Navigation */}
-      <nav className="border-b border-t bg-white">
+      <nav className="container mx-auto border-b-2 border-black bg-white">
         <ul className="flex justify-center space-x-2 md:space-x-8 py-3 md:py-4 px-3 md:px-4 overflow-x-auto">
           {navItems.map((item) => (
             <li key={item.name}>
