@@ -4,6 +4,7 @@ type FileType = {
   size: number;
   file_type: string;
   url: string;
+  description: string;
 };
 
 type HashtagType = {
@@ -44,8 +45,9 @@ const ResponseData: ResponseType[] = [
             id: "4749c2de-2448-485d-ae11-d20581fa9791",
             file_name: "Thumbnail Photo",
             size: 5,
-            file_type: "image",
+            file_type: "jpg",
             url: "https://asset.kompas.com/crops/ZaUnmiMpApZkIFIybIaqyrj2RI4=/423x0:4705x2854/1200x800/data/photo/2024/12/24/676a16d6ebf65.jpg",
+            description: "HEADLINE",
           },
           {
             id: "f1e32226-309c-46ad-8725-16d5fc9c6852",
@@ -53,6 +55,7 @@ const ResponseData: ResponseType[] = [
             size: 10,
             file_type: "mp4",
             url: "https://www.youtube.com/embed/iV4B_oAQVSg?si=CASo99XlPzOE59SP",
+            description: "VIDEO",
           },
         ],
         hashtags: [
@@ -90,8 +93,9 @@ const ResponseData: ResponseType[] = [
             id: "a1b2c3d4-5678-90ef-gh12-345678901234",
             file_name: "Flood Jakarta Image",
             size: 7,
-            file_type: "image",
+            file_type: "jpg",
             url: "https://asset.kompas.com/crops/pTeGi0FnMQN-W758mQw9ym4DrZA=/0x0:0x0/1200x800/data/photo/2025/03/04/67c6c77083ce2.jpg",
+            description: "HEADLINE",
           },
           {
             id: "e5f6g7h8-9012-34ij-kl56-789012345678",
@@ -99,6 +103,7 @@ const ResponseData: ResponseType[] = [
             size: 15,
             file_type: "mp4",
             url: "https://www.youtube.com/embed/YoOwm8fFpL8?si=HIvA0F-PLCdXVTDQ",
+            description: "VIDEO",
           },
         ],
         hashtags: [
