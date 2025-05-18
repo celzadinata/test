@@ -1,4 +1,3 @@
-import Image from "next/image";
 import News from "./berita/page";
 
 export default function Home() {

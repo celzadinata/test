@@ -1,6 +1,3 @@
-import Image from "next/image";
-import sample from "../../../../public/assets/oasis.jpg";
-
 export default function WidthAds({ value }: { value: number }) {
   return (
     <div

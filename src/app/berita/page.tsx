@@ -1,8 +1,8 @@
 import { getData } from "@/services/news";
 import { MultiplyReturn, SingleReturn } from "@/utils/helper/Type";
 import RandomNewsSection from "@/components/fragments/RandomNewsSection";
-import LatestNewsSection from "@/components/fragments/LatestNewsSection";
 import WidthAds from "@/components/core/WidthAds";
+import LatestNewsSection from "@/components/fragments/LatestNewsSection";
 
 export default async function News() {
   const randomNews: SingleReturn = await getData(
@@ -14,7 +14,7 @@ export default async function News() {
 
   return (
     <div>
-      <WidthAds value={8} />
+      <WidthAds value={4} />
       <RandomNewsSection randomNews={randomNews} allNews={allNews} />
       <LatestNewsSection randomNews={randomNews} />
     </div>

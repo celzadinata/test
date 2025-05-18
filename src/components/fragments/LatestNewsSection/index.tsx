@@ -1,7 +1,7 @@
 import SmallAds from "@/components/core/SmallAds";
 import WidthAds from "@/components/core/WidthAds";
 import TruncateText from "@/utils/helper/TruncateText";
-import { FileType, MultiplyReturn, SingleReturn } from "@/utils/helper/Type";
+import { FileType, SingleReturn } from "@/utils/helper/Type";
 import Image from "next/image";
 
 interface Props {
