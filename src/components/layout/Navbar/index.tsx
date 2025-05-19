@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../../public/assets/cam-logo.svg";
 import LogoDark from "../../../../public/assets/cam-logo-dark.svg";
-import { Search, Menu, X, TextSearch } from "lucide-react";
+import { Search, X, TextSearch } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,6 +15,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Bokor } from "next/font/google";
+import { useRouter } from "next/navigation";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -26,6 +27,12 @@ export default function Navbar() {
   const [isMenuSearchOpen, setIsMenuSearchOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
   const [isMobile, setIsMobile] = useState<boolean>(false);
+
+  const router = useRouter();
+
+  const openLoginModal = () => {
+    router.push("/masuk");
+  };
 
   type NavItems = {
     name: string;
@@ -160,6 +167,7 @@ export default function Navbar() {
           <Button
             variant="default"
             size="sm"
+            onClick={openLoginModal}
             className="bg-blue-500 hover:bg-blue-600 text-white text-sm h-8 px-3"
           >
             Daftar
@@ -260,7 +268,10 @@ export default function Navbar() {
             {/* Auth buttons in mobile menu */}
             <div className="flex flex-col gap-3 mt-4">
               <SheetClose asChild>
-                <Button className="w-full bg-blue-500 hover:bg-blue-600">
+                <Button
+                  onClick={openLoginModal}
+                  className="w-full bg-blue-500 hover:bg-blue-600"
+                >
                   Daftar
                 </Button>
               </SheetClose>

@@ -1,5 +1,4 @@
 import SmallAds from "@/components/core/SmallAds";
-import WidthAds from "@/components/core/WidthAds";
 import TruncateText from "@/utils/helper/TruncateText";
 import { FileType, MultiplyReturn, SingleReturn } from "@/utils/helper/Type";
 import Image from "next/image";
@@ -18,20 +17,23 @@ export default function RandomNewsSection({ randomNews, allNews }: Props) {
           randomNews.data.file_news.map(
             (item: FileType, index: number) =>
               item.description === "HEADLINE" && (
-                <div key={index} className="relative overflow-hidden">
-                  <div className="relative w-[300px] h-[200px] md:w-[500px] md:h-[300px] overflow-hidden bg-cover bg-no-repeat rounded-md">
+                <div
+                  key={index}
+                  className="relative overflow-hidden bg-cover bg-no-repeat group"
+                >
+                  <div className="relative w-[300px] h-[200px] md:w-[500px] md:h-[300px] rounded-md">
                     <Image
                       src={item.url}
                       alt="News image"
                       width={500}
                       height={300}
-                      className="object-cover rounded-md"
+                      className="object-cover rounded-md transition duration-300 ease-in-out group-hover:blur-sm"
                     />
                     {/* Dark gradient overlay for better text readability */}
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-transparent" />
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none z-[1]" />
 
                     {/* Content overlay */}
-                    <div className="absolute bottom-0 left-0 p-3 text-white transition duration-300 ease-in-out hover:scale-95">
+                    <div className="absolute bottom-0 left-0 p-3 text-white transition duration-300 ease-in-out group-hover:scale-95 z-[2]">
                       {randomNews.data.title && (
                         <div className="mb-1 flex items-center text-xs font-medium text-white/90">
                           <span>News Source</span>
@@ -58,12 +60,12 @@ export default function RandomNewsSection({ randomNews, allNews }: Props) {
           allNews.data.slice(0, 2).map((item: any, index: number) => (
             <div
               key={index}
-              className={`flex flex-col items-start bg-white md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 pb-4 ${
+              className={`group flex flex-col items-start bg-white md:flex-row md:max-w-xl dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 pb-4 ${
                 index === 0 ? "border-b-1 border-black mb-2" : "border-0"
               }`}
             >
               <div className="flex flex-col justify-between px-4 leading-normal">
-                <h5 className="mb-2 text-xl md:text-2xl font-bold tracking-tight text-gray-900 dark:text-white">
+                <h5 className="mb-2 text-xl md:text-2xl font-bold tracking-tight text-gray-900 dark:text-white cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
                   {item.title}
                 </h5>
                 <p className="mb-3 text-md font-medium text-gray-800 dark:text-gray-400">
@@ -81,7 +83,7 @@ export default function RandomNewsSection({ randomNews, allNews }: Props) {
                         alt="News image"
                         width={450}
                         height={200}
-                        className="object-cover rounded-md"
+                        className="object-cover rounded-md group-hover:scale-105 transition-transform duration-300"
                       />
                     )
                 )}
