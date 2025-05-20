@@ -116,13 +116,13 @@ export default function Navbar() {
 
         {/* Center logo - always visible, transitions smoothly */}
         <div
-          className={`absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1 transition-all duration-500 ease-in-out ${
+          className={`ml-2 flex items-center gap-1 transition-all duration-500 ease-in-out md:absolute md:left-1/2 md:transform md:-translate-x-1/2 ${
             scrolled || isMobile
               ? "opacity-100 scale-100"
               : "opacity-0 scale-95 pointer-events-none"
           }`}
         >
-          <div className="relative w-12 h-12">
+          <div className="relative w-10 h-10 md:w-12 md:h-12">
             <Image
               src={Logo}
               alt="Camera icon"
@@ -132,7 +132,9 @@ export default function Navbar() {
               priority
             />
           </div>
-          <h1 className={`text-3xl text-white ${bokorFont.className}`}>
+          <h1
+            className={`text-2xl md:text-3xl text-white ${bokorFont.className}`}
+          >
             Warung Jurnalis
           </h1>
         </div>
@@ -264,7 +266,7 @@ export default function Navbar() {
       {/* Main logo section - visible when not scrolled and not mobile */}
       <div
         className={`flex justify-center bg-white transition-all duration-500 ease-in-out ${
-          scrolled && !isMobile
+          isMobile || scrolled
             ? "max-h-0 opacity-0 overflow-hidden"
             : "max-h-36 py-4 md:py-6 opacity-100"
         }`}
