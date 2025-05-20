@@ -15,7 +15,7 @@ export default function CategoryNewsSection({ allNews }: Props) {
         {/* Nasional Section */}
         <div className="border-r border-gray-400 pr-6">
           <div className="flex items-center mb-4">
-            <h2 className="text-lg tracking-wider cursor-pointer font-bold hover:text-gray-500">
+            <h2 className="text-lg tracking-wider text-black cursor-pointer font-bold hover:text-gray-500 hover:underline">
               Nasional &gt;
             </h2>
           </div>

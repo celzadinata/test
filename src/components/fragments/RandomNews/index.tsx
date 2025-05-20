@@ -91,7 +91,7 @@ export default function RandomNewsSection({ randomNews, allNews }: Props) {
             </div>
           ))}
       </div>
-      <div className="w-full mx-5 md:mx-0 md:ms-5 ">
+      <div className="w-full px-5 md:px-0 md:mx-0 md:ms-5 ">
         <SmallAds />
       </div>
     </div>

@@ -1,9 +1,12 @@
 export default function WidthAds({ value }: { value: number }) {
   return (
-    <div
-      className={`mt-6 bg-gray-100 aspect-${value}/1 rounded-lg flex items-center justify-center`}
-    >
-      <p className="text-center">Advertisement</p>
+    <div className="mb-5 mt-3 w-full bg-gray-100 p-4 rounded-md">
+      <p className="text-xs text-gray-500 mb-2">Advertisement</p>
+      <div
+        className={`bg-gray-200 h-${value} flex items-center justify-center`}
+      >
+        <span className="text-gray-400">Ad Space</span>
+      </div>
     </div>
   );
 }

@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/sheet";
 import { Bokor } from "next/font/google";
 import { useRouter } from "next/navigation";
+import { useMediaQuery } from "@/utils/hooks/use-media-query";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -26,7 +27,7 @@ export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [isMenuSearchOpen, setIsMenuSearchOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
 
   const router = useRouter();
 
@@ -48,55 +49,34 @@ export default function Navbar() {
   ];
 
   useEffect(() => {
-    // Check if window is defined (to avoid SSR issues)
-    if (typeof window !== "undefined") {
-      // Initial check for mobile
-      setIsMobile(window.innerWidth < 768);
-
-      // Add listener for resize
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-
-      window.addEventListener("resize", handleResize);
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, []);
-
-  useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
+    let timer: NodeJS.Timeout;
 
     const handleScroll = () => {
       lastScrollY = window.scrollY;
 
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          // Use a higher threshold for scrolling down than scrolling up
-          // This creates a "sticky" effect and prevents flickering
-          const shouldBeScrolled = lastScrollY > 150;
-
-          if (shouldBeScrolled !== scrolled) {
-            setScrolled(shouldBeScrolled);
-          }
-
-          ticking = false;
-        });
-
-        ticking = true;
-      }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            setScrolled(lastScrollY > 150); // Increased threshold
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, 100);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
     };
-  }, [scrolled]);
+  }, []);
 
   return (
-    <header className="flex flex-col w-full sticky top-0 z-50">
+    <header className="flex flex-col w-full sticky top-0 z-50 will-change-transform">
       {/* Top bar */}
       <div className="bg-black text-white py-3 md:py-4 px-3 md:px-6 flex items-center justify-between relative">
         {/* Search section - only visible on desktop */}
@@ -134,30 +114,25 @@ export default function Navbar() {
         {/* Empty div for mobile to maintain layout */}
         <div className="md:hidden"></div>
 
-        {/* Center logo - visible when scrolled OR on mobile */}
+        {/* Center logo - always visible, transitions smoothly */}
         <div
-          className={`absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1 transition-all duration-300 ease-in-out ${
-            scrolled
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-4 pointer-events-none"
-          } ${
-            isMobile
-              ? "opacity-100 w-full translate-y-0"
-              : "opacity-0 -translate-y-4 pointer-events-none"
+          className={`absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1 transition-all duration-500 ease-in-out ${
+            scrolled || isMobile
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-95 pointer-events-none"
           }`}
         >
-          <div className="relative w-12 h-12 md:w-15 md:h-15">
+          <div className="relative w-12 h-12">
             <Image
               src={Logo}
               alt="Camera icon"
               width={44}
               height={44}
               className="w-full h-full"
+              priority
             />
           </div>
-          <h1
-            className={`text-3xl md:text-4xl text-white ${bokorFont.className}`}
-          >
+          <h1 className={`text-3xl text-white ${bokorFont.className}`}>
             Warung Jurnalis
           </h1>
         </div>
@@ -203,6 +178,7 @@ export default function Navbar() {
                   alt="Camera icon"
                   width={52}
                   height={52}
+                  priority
                 />
               </div>
               <h2 className={`text-3xl ml-1 ${bokorFont.className}`}>
@@ -285,10 +261,10 @@ export default function Navbar() {
         </Sheet>
       </div>
 
-      {/* Logo - only visible when not scrolled AND on desktop */}
+      {/* Main logo section - visible when not scrolled and not mobile */}
       <div
-        className={`flex justify-center py-0 bg-white transition-all duration-300 ease-in-out ${
-          scrolled || isMobile
+        className={`flex justify-center bg-white transition-all duration-500 ease-in-out ${
+          scrolled && !isMobile
             ? "max-h-0 opacity-0 overflow-hidden"
             : "max-h-36 py-4 md:py-6 opacity-100"
         }`}
@@ -304,6 +280,7 @@ export default function Navbar() {
               width={128}
               height={128}
               className="w-full h-full"
+              priority
             />
           </div>
           <h1

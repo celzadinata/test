@@ -16,7 +16,7 @@ export default async function Home() {
 
   return (
     <div>
-      <WidthAds value={4} />
+      <WidthAds value={48} />
       <RandomNewsSection randomNews={randomNews} allNews={allNews} />
       <LatestNewsSection randomNews={randomNews} />
       <FeaturedCategoryNewsSection randomNews={randomNews} />

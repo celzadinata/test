@@ -136,7 +136,7 @@ export default function LatestNewsSection({ randomNews }: Props) {
         </div>
 
         {/* Bottom advertisement */}
-        <WidthAds value={12} />
+        <WidthAds value={28} />
       </div>
     </div>
   );

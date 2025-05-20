@@ -8,24 +8,32 @@ export function useMediaQuery(query: string): boolean {
   useEffect(() => {
     const media = window.matchMedia(query);
 
-    // Initial check
-    if (media.matches !== matches) {
-      setMatches(media.matches);
-    }
-
-    // Add listener for changes
-    const listener = () => {
+    // Update state with current match
+    const updateMatches = () => {
       setMatches(media.matches);
     };
 
-    // Modern approach with addEventListener
-    media.addEventListener("change", listener);
+    // Initial check
+    updateMatches();
+
+    // Add listener with debounce
+    const debouncedUpdate = debounce(updateMatches, 100);
+    media.addEventListener("change", debouncedUpdate);
 
     // Clean up
     return () => {
-      media.removeEventListener("change", listener);
+      media.removeEventListener("change", debouncedUpdate);
     };
-  }, [matches, query]);
+  }, [query]);
 
   return matches;
+}
+
+// Simple debounce function
+function debounce(fn: Function, delay: number) {
+  let timeoutId: NodeJS.Timeout;
+  return (...args: any[]) => {
+    clearTimeout(timeoutId);
+    timeoutId = setTimeout(() => fn(...args), delay);
+  };
 }

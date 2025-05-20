@@ -14,7 +14,10 @@ export default function FeaturedCategoryNewsSection({ randomNews }: Props) {
       <div className="border-t border-black mb-2"></div>
       {randomNews.data && (
         <div className="text-lg tracking-wider font-bold mb-4">
-          <Link href="/internasional" className="text-gray-800 hover:underline">
+          <Link
+            href="/internasional"
+            className="text-black hover:text-gray-500 hover:underline"
+          >
             {randomNews.data.category_name} &gt;
           </Link>
         </div>

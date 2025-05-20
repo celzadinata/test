@@ -1,9 +1,10 @@
 export default function SmallAds() {
   return (
-    <div
-      className={`bg-gray-100 aspect-4/1 md:aspect-3/2 flex items-center justify-center`}
-    >
-      <p className="text-center">Advertisement</p>
+    <div className="mb-8 w-full bg-gray-100 p-4 rounded-md">
+      <p className="text-xs text-gray-500 mb-2">Advertisement</p>
+      <div className="bg-gray-200 h-48 flex items-center justify-center">
+        <span className="text-gray-400">Ad Space</span>
+      </div>
     </div>
   );
 }
