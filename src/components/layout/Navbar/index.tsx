@@ -40,7 +40,7 @@ export default function Navbar() {
   };
 
   const navItems: NavItems[] = [
-    { name: "Berita", href: "/berita" },
+    { name: "Berita", href: "/" },
     { name: "Nasional", href: "/nasional" },
     { name: "Internasional", href: "/internasional" },
     { name: "Mega Politik", href: "/mega-politik" },
