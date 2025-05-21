@@ -1,7 +1,12 @@
 import { getAllNews } from "@/utils/DummyApi/news";
 import TruncateText from "@/utils/helper/TruncateText";
-import { ArrowRight } from "lucide-react";
+import { Bokor } from "next/font/google";
 import Image from "next/image";
+
+const bokorFont = Bokor({
+  subsets: ["latin"],
+  weight: "400",
+});
 
 type Params = {
   params: {
@@ -22,7 +27,9 @@ export default async function CategoryPage({ params }: Params) {
   return (
     <div className="min-h-screen">
       <div className="container mx-auto px-4">
-        <h1 className="text-3xl md:text-5xl font-bold mb-6 uppercase text-center underline my-6 md:my-10">
+        <h1
+          className={`text-3xl ${bokorFont.className} tracking-widest md:text-6xl mb-6 uppercase text-center underline my-6 md:my-10`}
+        >
           {slug}
         </h1>
 
@@ -34,8 +41,8 @@ export default async function CategoryPage({ params }: Params) {
 
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-2/3">
-            {filteredNews.map((news) => (
-              <div key={news.id} className="mb-10">
+            {filteredNews.map((news: any, index: number) => (
+              <div key={index} className="mb-10">
                 <div className="flex flex-col md:flex-row gap-6">
                   <div className="flex-1">
                     <h2 className="text-2xl md:text-3xl font-bold mb-3">
@@ -69,9 +76,9 @@ export default async function CategoryPage({ params }: Params) {
               Most Read {">"}
             </h3>
             <div className="space-y-4">
-              {mostReadNews.map((item, index) => (
+              {mostReadNews.map((item: any, index: number) => (
                 <div
-                  key={item.id}
+                  key={index}
                   className="pb-4 border-b border-gray-100 last:border-0"
                 >
                   {item.file_news && index === 0 && (
