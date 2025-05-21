@@ -11,7 +11,7 @@ interface Props {
 export default function LatestNewsSection({ randomNews }: Props) {
   return (
     <div className="bg-white text-black min-h-screen">
-      <div className="container mx-auto px-4 py-6">
+      <div className="container mx-auto px-4 md:px-0 py-6">
         {/* Main grid layout */}
         <div className="grid grid-cols-1 lg:grid-cols-4 gap-4">
           {/* Main content area - 3 columns on large screens */}

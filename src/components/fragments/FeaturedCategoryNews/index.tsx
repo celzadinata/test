@@ -9,13 +9,13 @@ interface Props {
 
 export default function FeaturedCategoryNewsSection({ randomNews }: Props) {
   return (
-    <div className="mb-10">
+    <div className="mb-10 conatainer mx-auto px-4 md:px-0">
       {/* Top border line */}
       <div className="border-t border-black mb-2"></div>
       {randomNews.data && (
         <div className="text-lg tracking-wider font-bold mb-4">
           <Link
-            href="/internasional"
+            href="/"
             className="text-black hover:text-gray-500 hover:underline"
           >
             {randomNews.data.category_name} &gt;
@@ -24,30 +24,41 @@ export default function FeaturedCategoryNewsSection({ randomNews }: Props) {
       )}
 
       <div className="grid grid-cols-1 md:grid-cols-12 gap-6">
-        {randomNews.data && (
-          <div className="md:col-span-4">
-            <h2 className="text-2xl font-bold mb-3">{randomNews.data.title}</h2>
-            <p className="text-gray-700">
-              {TruncateText(randomNews.data.body, 200)}
-            </p>
-          </div>
-        )}
-
-        {randomNews.data &&
-          randomNews.data.file_news.map(
-            (file: FileType, index: number) =>
-              file.description === "HEADLINE" && (
-                <div key={index} className="md:col-span-4">
-                  <Image
-                    src={file.url}
-                    alt="Headline image"
-                    width={300}
-                    height={200}
-                    className="w-full h-auto"
-                  />
-                </div>
-              )
+        <div className="grid grid-cols-1 group md:grid-cols-2 md:col-span-8">
+          {randomNews.data && (
+            <div className="md:col-span-1">
+              <Link href="/">
+                <h2 className="text-2xl font-bold mb-3 cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
+                  {randomNews.data.title}
+                </h2>
+              </Link>
+              <p className="text-gray-700">
+                {TruncateText(randomNews.data.body, 200)}
+              </p>
+            </div>
           )}
+
+          {randomNews.data &&
+            randomNews.data.file_news.map(
+              (file: FileType, index: number) =>
+                file.description === "HEADLINE" && (
+                  <div
+                    key={index}
+                    className="md:col-span-1 rounded-md overflow-hidden cursor-pointer bg-cover bg-no-repeat"
+                  >
+                    <Link href="/">
+                      <Image
+                        src={file.url}
+                        alt="Headline image"
+                        width={300}
+                        height={200}
+                        className="w-full h-auto rounded-md transition duration-300 ease-in-out group-hover:scale-110"
+                      />
+                    </Link>
+                  </div>
+                )
+            )}
+        </div>
 
         <div className="md:col-span-4 flex flex-col space-y-4">
           <div>

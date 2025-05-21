@@ -27,13 +27,13 @@ export default function RandomNewsSection({ randomNews, allNews }: Props) {
                       alt="News image"
                       width={500}
                       height={300}
-                      className="object-cover rounded-md transition duration-300 ease-in-out group-hover:blur-sm"
+                      className="object-cover rounded-md transition duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
                     />
                     {/* Dark gradient overlay for better text readability */}
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none z-[1]" />
 
                     {/* Content overlay */}
-                    <div className="absolute bottom-0 left-0 p-3 text-white transition duration-300 ease-in-out group-hover:scale-95 z-[2]">
+                    <div className="absolute bottom-0 left-0 p-3 text-white transition duration-300 ease-in-out group-hover:cursor-pointer group-hover:scale-95 z-[2]">
                       {randomNews.data.title && (
                         <div className="mb-1 flex items-center text-xs font-medium text-white/90">
                           <span>News Source</span>
@@ -83,7 +83,7 @@ export default function RandomNewsSection({ randomNews, allNews }: Props) {
                         alt="News image"
                         width={450}
                         height={200}
-                        className="object-cover rounded-md group-hover:scale-105 transition-transform duration-300"
+                        className="object-cover rounded-md group-hover:scale-105 cursor-pointer tr ansition-transform duration-300"
                       />
                     )
                 )}
