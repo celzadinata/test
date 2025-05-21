@@ -123,6 +123,52 @@ const ResponseData: ResponseType[] = [
       },
     ],
   },
+  {
+    status: 200,
+    message: "Ok",
+    data: [
+      {
+        id: "123e4567-e89b-12d3-a456-426655440000",
+        slug: "korupsi-timah-271-triliun",
+        title:
+          "Kerugian Korupsi Timah Rp 271 Triliun. Bagaimana Menghitungnya?",
+        body: "Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos. Lorem ipsum dolor sit amet consectetur adipiscing elit. Quisque faucibus ex sapien vitae pellentesque sem placerat. In id cursus mi pretium tellus duis convallis. Tempus leo eu aenean sed diam urna tempor. Pulvinar vivamus fringilla lacus nec metus bibendum egestas. Iaculis massa nisl malesuada lacinia integer nunc posuere. Ut hendrerit semper vel class aptent taciti sociosqu. Ad litora torquent per conubia nostra inceptos himenaeos.",
+        category_name: "Nasional",
+        file_news: [
+          {
+            id: "4749c2de-2448-485d-ae11-d20581fa9791",
+            file_name: "Thumbnail Photo",
+            size: 5,
+            file_type: "jpg",
+            url: "https://asset.kompas.com/crops/ZaUnmiMpApZkIFIybIaqyrj2RI4=/423x0:4705x2854/1200x800/data/photo/2024/12/24/676a16d6ebf65.jpg",
+            description: "HEADLINE",
+          },
+          {
+            id: "f1e32226-309c-46ad-8725-16d5fc9c6852",
+            file_name: "News Video",
+            size: 10,
+            file_type: "mp4",
+            url: "https://www.youtube.com/embed/iV4B_oAQVSg?si=CASo99XlPzOE59SP",
+            description: "VIDEO",
+          },
+        ],
+        hashtags: [
+          {
+            id: "626ebb1e-5d41-49c6-a16f-5b4399487a6b",
+            hashtag_name: "Korupsi",
+          },
+          {
+            id: "1bebf4ab-377f-451a-bcb9-33153f5d12d2",
+            hashtag_name: "271Triliun",
+          },
+          {
+            id: "27fd4e9a-a55a-42c1-a9be-e57f6916fe5f",
+            hashtag_name: "KorupsiTimah",
+          },
+        ],
+      },
+    ],
+  },
 ];
 
 export const getAllNews = async (): Promise<DataType[]> => {
