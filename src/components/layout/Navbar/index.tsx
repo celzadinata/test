@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../../public/assets/cam-logo.svg";
 import LogoDark from "../../../../public/assets/cam-logo-dark.svg";
-import { Search, X, TextSearch } from "lucide-react";
+import { Search, X, TextSearch, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,7 +15,7 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Bokor } from "next/font/google";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
 
 const bokorFont = Bokor({
@@ -25,11 +25,15 @@ const bokorFont = Bokor({
 
 export default function Navbar() {
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMenuSearchOpen, setIsMenuSearchOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
   const isMobile = useMediaQuery("(max-width: 767px)");
+  const pathname = usePathname();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const openLoginModal = () => {
     router.push("/masuk");
@@ -48,6 +52,17 @@ export default function Navbar() {
     { name: "Lokal", href: "/lokal" },
   ];
 
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      router.push(`/berita?search=${encodeURIComponent(searchQuery.trim())}`);
+      inputRef.current?.blur(); // Optional: hilangkan focus setelah submit
+    }
+  };
+
+  useEffect(() => {
+    setSearchQuery(searchParams.get("search") || "");
+  }, [searchParams]);
+
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
@@ -60,12 +75,12 @@ export default function Navbar() {
       timer = setTimeout(() => {
         if (!ticking) {
           window.requestAnimationFrame(() => {
-            setScrolled(lastScrollY > 150); // Increased threshold
+            setScrolled(lastScrollY > 300); // Threshold for scroll detection
             ticking = false;
           });
           ticking = true;
         }
-      }, 100);
+      }, 150); // Delay for smoother transition
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -94,16 +109,25 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center">
               <Input
+                ref={inputRef}
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Cari berita"
                 className="h-8 bg-gray-800 border-gray-700 text-white text-sm w-64"
                 autoFocus
               />
+
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-white h-8 p-0 ml-1"
-                onClick={() => setIsSearchOpen(false)}
+                onClick={() => {
+                  setSearchQuery("");
+                  setIsSearchOpen(false);
+                  router.push("/");
+                }}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -111,13 +135,10 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Empty div for mobile to maintain layout */}
-        <div className="md:hidden"></div>
-
-        {/* Center logo - always visible, transitions smoothly */}
+        {/* Center logo - always visible on non-homepage routes, conditional on homepage */}
         <div
           className={`ml-2 flex items-center gap-1 transition-all duration-500 ease-in-out md:absolute md:left-1/2 md:transform md:-translate-x-1/2 ${
-            scrolled || isMobile
+            pathname !== "/" || isMobile || scrolled
               ? "opacity-100 scale-100"
               : "opacity-0 scale-95 pointer-events-none"
           }`}
@@ -142,19 +163,13 @@ export default function Navbar() {
         {/* Auth buttons - only visible on desktop */}
         <div className="hidden md:flex items-center gap-2">
           <Button
-            variant="default"
-            size="sm"
             onClick={openLoginModal}
-            className="bg-blue-500 hover:bg-blue-600 text-white text-sm h-8 px-3"
-          >
-            Daftar
-          </Button>
-          <Button
             variant="ghost"
             size="sm"
-            className="text-white border-1 hover:bg-white hover:text-black text-sm h-8 px-3"
+            className="text-white border-1 hover:bg-white cursor-pointer hover:text-black text-sm h-8 px-3"
           >
-            Masuk
+            <LogIn />
+            Daftar
           </Button>
         </div>
 
@@ -248,49 +263,16 @@ export default function Navbar() {
               <SheetClose asChild>
                 <Button
                   onClick={openLoginModal}
-                  className="w-full bg-blue-500 hover:bg-blue-600"
+                  variant="outline"
+                  className="w-full"
                 >
+                  <LogIn />
                   Daftar
-                </Button>
-              </SheetClose>
-              <SheetClose asChild>
-                <Button variant="outline" className="w-full">
-                  Masuk
                 </Button>
               </SheetClose>
             </div>
           </SheetContent>
         </Sheet>
-      </div>
-
-      {/* Main logo section - visible when not scrolled and not mobile */}
-      <div
-        className={`flex justify-center bg-white transition-all duration-500 ease-in-out ${
-          isMobile || scrolled
-            ? "max-h-0 opacity-0 overflow-hidden"
-            : "max-h-36 py-4 md:py-6 opacity-100"
-        }`}
-      >
-        <Link
-          href="/"
-          className="flex flex-col md:flex-row items-center gap-1 md:gap-2"
-        >
-          <div className="relative w-24 h-24 md:w-32 md:h-32">
-            <Image
-              src={LogoDark}
-              alt="Camera icon"
-              width={128}
-              height={128}
-              className="w-full h-full"
-              priority
-            />
-          </div>
-          <h1
-            className={`text-4xl md:text-6xl lg:text-7xl ${bokorFont.className}`}
-          >
-            Warung Jurnalis
-          </h1>
-        </Link>
       </div>
 
       {/* Navigation */}
