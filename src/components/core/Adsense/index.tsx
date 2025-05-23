@@ -4,7 +4,7 @@ interface AdsenseProps {
   pId: string;
 }
 
-export default function Adsense({ pId }: AdsenseProps) {
+export default function AdSense({ pId }: AdsenseProps) {
   return (
     <>
       <Script

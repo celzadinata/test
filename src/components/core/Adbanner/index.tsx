@@ -1,27 +1,41 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 type AdBannerType = {
   dataAdSlot: string;
-  dataAdFormat: string;
-  dataFullWidthResponsive: boolean;
+  dataAdFormat?: string;
+  dataFullWidthResponsive?: boolean;
 };
 
-export default function Adbanner({
+export default function AdBanner({
   dataAdSlot,
-  dataAdFormat,
-  dataFullWidthResponsive,
+  dataAdFormat = "auto",
+  dataFullWidthResponsive = true,
 }: AdBannerType) {
+  const [isMounted, setIsMounted] = useState(false);
+
   useEffect(() => {
-    try {
-      ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
-        {}
-      );
-    } catch (error: any) {
-      console.log(error.message);
+    setIsMounted(true);
+
+    if (isMounted) {
+      try {
+        ((window as any).adsbygoogle = (window as any).adsbygoogle || []).push(
+          {}
+        );
+      } catch (error) {
+        console.error("AdSense error:", error);
+      }
     }
-  }, []);
+  }, [isMounted]);
+
+  if (!isMounted) {
+    return (
+      <div className="bg-gray-200 h-48 flex items-center justify-center">
+        <span className="text-gray-400">Loading ad...</span>
+      </div>
+    );
+  }
 
   return (
     <ins

@@ -1,18 +1,20 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Bokor, Lora } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import Adsense from "@/components/core/Adsense";
+import AdSense from "@/components/core/AdSense";
 
-const geistSans = Geist({
-  variable: "--font-geist-sans",
-  subsets: ["latin"],
+const bokor = Bokor({
+  variable: "--font-bokor",
+  subsets: ["khmer", "latin"],
+  weight: ["400"],
 });
 
-const geistMono = Geist_Mono({
-  variable: "--font-geist-mono",
+const lora = Lora({
+  variable: "--font-lora",
   subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 export const metadata: Metadata = {
@@ -30,11 +32,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <Adsense pId="ca-pub-2804822668582605" />
+        <AdSense pId="ca-pub-2804822668582605" />
       </head>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${lora.variable} ${bokor.variable} antialiased`}>
         <Navbar />
         <div className="container mx-auto">
           {children}
