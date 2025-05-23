@@ -42,7 +42,7 @@ export default async function Home() {
           Warung Jurnalis
         </h1>
       </div>
-      <WidthAds value={88} />
+      <WidthAds />
       <RandomNewsSection randomNews={randomNews} allNews={allNews} />
       <LatestNewsSection randomNews={randomNews} />
       <FeaturedCategoryNewsSection randomNews={randomNews} />
