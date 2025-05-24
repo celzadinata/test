@@ -6,13 +6,11 @@ interface AdsenseProps {
 
 export default function AdSense({ pId }: AdsenseProps) {
   return (
-    <>
-      <Script
-        async
-        src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pId}`}
-        crossOrigin="anonymous"
-        strategy="afterInteractive"
-      />
-    </>
+    <Script
+      async
+      src={`https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${pId}`}
+      crossOrigin="anonymous"
+      strategy="afterInteractive"
+    />
   );
 }

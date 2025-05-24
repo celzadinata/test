@@ -17,13 +17,23 @@ import {
 import { Bokor } from "next/font/google";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
+import { getDataCategory } from "@/services/category";
+import { CategoryType } from "@/utils/helper/Type";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
   weight: "400",
 });
 
+type NavItems = {
+  name: string;
+  href: string;
+};
+
 export default function Navbar() {
+  const [navItems, setNavItems] = useState<NavItems[]>([
+    { name: "Berita", href: "/" },
+  ]);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMenuSearchOpen, setIsMenuSearchOpen] = useState<boolean>(false);
@@ -39,23 +49,27 @@ export default function Navbar() {
     router.push("/masuk");
   };
 
-  type NavItems = {
-    name: string;
-    href: string;
-  };
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const { data } = await getDataCategory("api/kategori");
 
-  const navItems: NavItems[] = [
-    { name: "Berita", href: "/" },
-    { name: "Nasional", href: "/nasional" },
-    { name: "Internasional", href: "/internasional" },
-    { name: "Mega Politik", href: "/mega-politik" },
-    { name: "Lokal", href: "/lokal" },
-  ];
+        const dynamicNavItems: NavItems[] = data.map((item: CategoryType) => ({
+          name: item.category_name,
+          href: `/${item.category_name.toLowerCase().replace(/\s+/g, "-")}`,
+        }));
+        setNavItems((prev) => [...prev, ...dynamicNavItems]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCategories();
+  }, []);
 
   const handleKeyDown = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && searchQuery.trim()) {
       router.push(`/berita?search=${encodeURIComponent(searchQuery.trim())}`);
-      inputRef.current?.blur(); // Optional: hilangkan focus setelah submit
+      inputRef.current?.blur();
     }
   };
 
@@ -153,11 +167,13 @@ export default function Navbar() {
               priority
             />
           </div>
-          <h1
-            className={`text-2xl md:text-3xl text-white ${bokorFont.className}`}
-          >
-            Warung Jurnalis
-          </h1>
+          <Link href="/">
+            <h1
+              className={`text-2xl md:text-3xl text-white ${bokorFont.className}`}
+            >
+              Warung Jurnalis
+            </h1>
+          </Link>
         </div>
 
         {/* Auth buttons - only visible on desktop */}
@@ -169,7 +185,7 @@ export default function Navbar() {
             className="text-white border-1 hover:bg-white cursor-pointer hover:text-black text-sm h-8 px-3"
           >
             <LogIn />
-            Daftar
+            Masuk
           </Button>
         </div>
 
@@ -198,9 +214,11 @@ export default function Navbar() {
                   priority
                 />
               </div>
-              <h2 className={`text-3xl ml-1 ${bokorFont.className}`}>
-                Warung Jurnalis
-              </h2>
+              <Link href="/">
+                <h2 className={`text-3xl ml-1 ${bokorFont.className}`}>
+                  Warung Jurnalis
+                </h2>
+              </Link>
             </div>
 
             {/* Search in mobile menu */}
@@ -267,7 +285,7 @@ export default function Navbar() {
                   className="w-full"
                 >
                   <LogIn />
-                  Daftar
+                  Masuk
                 </Button>
               </SheetClose>
             </div>

@@ -34,8 +34,17 @@ export type MultiplyReturn = {
   data: DataType[];
 };
 
+//-----------------------------------------------------------------
+
+export type CategoryType = {
+  id: string;
+  category_name: string;
+  created_at: string;
+  updated_at: string;
+};
+
 export type ResponseType = {
-  status: number;
+  statusCode: number;
   message: string;
-  data: DataType[];
+  data: CategoryType[] | CategoryType;
 };

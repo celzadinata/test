@@ -1,8 +1,9 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
-import { X } from "lucide-react";
-import { useRouter } from "next/navigation";
+import { Undo2, X } from "lucide-react";
+import { usePathname, useRouter } from "next/navigation";
+import path from "path";
 import { MouseEventHandler, ReactNode, useRef } from "react";
 
 interface Props {
@@ -12,6 +13,7 @@ interface Props {
 export default function Modal({ children }: Props) {
   const overlay = useRef(null);
   const router = useRouter();
+  const pathname = usePathname();
 
   const handleCloseOverlay: MouseEventHandler = (e) => {
     if (e.target === overlay.current) {
@@ -22,6 +24,8 @@ export default function Modal({ children }: Props) {
   const handleCloseButton = () => {
     router.back();
   };
+
+  const Icon = pathname === "/daftar" ? Undo2 : X;
 
   return (
     <div
@@ -36,7 +40,7 @@ export default function Modal({ children }: Props) {
             onClick={handleCloseButton}
             className="absolute top-3 right-2.5 text-gray-400 bg-transparent hover:bg-gray-200 hover:text-gray-900 rounded-lg text-sm p-1.5 ml-auto inline-flex items-center popup-close"
           >
-            <X className="h-4 w-4" />
+            <Icon className="h-4 w-4" />
           </Button>
           {children}
         </div>
