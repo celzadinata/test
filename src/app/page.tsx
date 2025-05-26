@@ -1,5 +1,3 @@
-import { MultiplyReturn, SingleReturn } from "@/utils/helper/Type";
-import { getData } from "@/services/news";
 import WidthAds from "@/components/core/WidthAds";
 import RandomNewsSection from "@/components/fragments/RandomNews";
 import LatestNewsSection from "@/components/fragments/LatestNews";
@@ -9,19 +7,26 @@ import CategoryNewsSection from "@/components/fragments/CategoryNews";
 import Logo from "../../public/assets/cam-logo-dark.svg";
 import Image from "next/image";
 import { Bokor } from "next/font/google";
+import { getData } from "@/services";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
   weight: "400",
 });
 
+const baseURL = process.env.NEXT_PUBLIC_NEXT_SERVER_URL;
+
 export default async function Home() {
-  const randomNews: SingleReturn = await getData(
-    "http://localhost:3000/api/berita/random"
+  const randomNewsLimit2: any = await getData(
+    `${baseURL}/api/berita/random?limit=2`
   );
-  const allNews: MultiplyReturn = await getData(
-    "http://localhost:3000/api/berita"
+  const randomNewsLimit1: any = await getData(
+    `${baseURL}/api/berita/random?limit=1`
   );
+
+  // const allNews: any = await getData("http://localhost:3000/api/berita");
+
+  // console.log("INI GET ALL NEWSS", allNews);
 
   return (
     <div>
@@ -43,10 +48,13 @@ export default async function Home() {
         </h1>
       </div>
       <WidthAds />
-      <RandomNewsSection randomNews={randomNews} allNews={allNews} />
-      <LatestNewsSection randomNews={randomNews} />
-      <FeaturedCategoryNewsSection randomNews={randomNews} />
-      <CategoryNewsSection allNews={allNews} />
+      <RandomNewsSection
+        randomNewsLimit1={randomNewsLimit1}
+        randomNewsLimit2={randomNewsLimit2}
+      />
+      {/* <LatestNewsSection randomNews={randomNews} /> */}
+      {/* <FeaturedCategoryNewsSection randomNews={randomNews} /> */}
+      {/* <CategoryNewsSection allNews={allNews} /> */}
     </div>
   );
 }

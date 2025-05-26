@@ -1,20 +1,32 @@
-import { getRandomNews } from "@/utils/DummyApi/news";
-import { NextResponse } from "next/server";
+import { getAllRandomNews } from "@/utils/backend/news";
+import { NextRequest, NextResponse } from "next/server";
 
-export async function GET() {
-  const randomNews = await getRandomNews();
+export async function GET(req: NextRequest) {
+  try {
+    const limitParam = req.nextUrl.searchParams.get("limit");
+    const limit = parseInt(limitParam || "0");
 
-  if (randomNews) {
+    const response = await getAllRandomNews(limit);
+
+    if (response.statusCode === 200) {
+      return NextResponse.json({
+        status: response.statusCode,
+        message: response.message,
+        data: response.data, //ADA DATA DATA PAGINATION DISINI
+      });
+    }
+
     return NextResponse.json({
-      status: 200,
-      message: "Success",
-      data: randomNews,
+      status: response.statusCode,
+      message: response.message,
+      data: [],
+    });
+  } catch (error) {
+    console.error("Error fetching news:", error);
+    return NextResponse.json({
+      status: 500,
+      message: error,
+      data: [],
     });
   }
-
-  return NextResponse.json({
-    status: 404,
-    message: "Product not found",
-    data: {},
-  });
 }

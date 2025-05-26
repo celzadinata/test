@@ -1,16 +1,16 @@
-export type FileType = {
-  id: string;
-  file_name: string;
-  size: number;
-  file_type: string;
-  url: string;
-  description: string;
-};
+// export type FileType = {
+//   id: string;
+//   file_name: string;
+//   size: number;
+//   file_type: string;
+//   url: string;
+//   description: string;
+// };
 
-export type HashtagType = {
-  id: string;
-  hashtag_name: string;
-};
+// export type HashtagType = {
+//   id: string;
+//   hashtag_name: string;
+// };
 
 export type DataType = {
   id: string;
@@ -35,6 +35,16 @@ export type MultiplyReturn = {
 };
 
 //-----------------------------------------------------------------
+export type RegisterFormType = {
+  username: string;
+  email: string;
+  password: string;
+};
+
+export type LoginFormType = {
+  email: string;
+  password: string;
+};
 
 export type CategoryType = {
   id: string;
@@ -43,8 +53,67 @@ export type CategoryType = {
   updated_at: string;
 };
 
+export type HashtagType = {
+  id: string;
+  hashtag_name: string;
+  news_id: string;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string | null;
+};
+
+export type FileType = {
+  id: string;
+  file_name: string;
+  size: number;
+  file_type: string;
+  url: string;
+  news_id: string;
+  description: string;
+  created_at: string;
+  updated_at: string;
+};
+
+export type NewsData = {
+  id: string;
+  title: string;
+  slug: string;
+  body: string;
+  category_id: string;
+  created_by: string;
+  updated_by: string;
+  published: number;
+  created_at: string;
+  updated_at: string;
+  deleted_at?: string | null;
+  tags: HashtagType[];
+  files: FileType[];
+};
+
+export type NewsType = {
+  current_page: number;
+  data: NewsData[];
+  first_page_url: string;
+  from: number;
+  last_page: number;
+  last_page_url: string;
+  next_page_url: string | null;
+  per_page: number;
+  prev_page_url: string | null;
+  to: number;
+  total: number;
+};
+
 export type ResponseType = {
   statusCode: number;
   message: string;
-  data: CategoryType[] | CategoryType;
+  data: CategoryType[] | CategoryType | NewsType[] | NewsType;
+};
+
+export type AuthResponse = {
+  status: number;
+  message: string;
+  data?: {
+    token: string;
+  };
 };

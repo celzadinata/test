@@ -39,8 +39,8 @@ export default function RootLayout({
       <body className={`${lora.variable} ${bokor.variable} antialiased`}>
         <Navbar />
         <div className="container mx-auto">
-          {children}
           {auth}
+          {children}
         </div>
         <Footer />
       </body>

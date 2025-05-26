@@ -1,9 +1,59 @@
+"use client";
+
 import Modal from "@/components/core/Modal";
+import { LoginFormType } from "@/utils/helper/Type";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
 export default function Login() {
+  const router = useRouter();
+  const [form, setForm] = useState<LoginFormType>({
+    email: "",
+    password: "",
+  });
+  const [error, setError] = useState<string>("");
+  const [disableClose, setDisableClose] = useState<boolean>(false);
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setForm({ ...form, [e.target.name]: e.target.value });
+  };
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setError("");
+
+    try {
+      const res = await fetch("/api/auth/masuk", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(form),
+      });
+
+      console.log("INI RESSS", res);
+
+      const data = await res.json();
+
+      console.log("INI DATA", data);
+
+      if (data.status !== 200) {
+        setError(
+          typeof data.message.errors === "string"
+            ? data.message.errors
+            : JSON.stringify(data.message.errors)
+        );
+        setDisableClose(true);
+        return;
+      }
+
+      router.back();
+    } catch (err) {
+      setError("Terjadi kesalahan saat login");
+    }
+  };
+
   return (
-    <Modal>
+    <Modal disableClose={disableClose}>
       <div className="p-5">
         <h3 className="text-2xl mb-0.5 font-medium"></h3>
         <p className="mb-4 text-sm font-normal text-gray-800"></p>
@@ -15,6 +65,7 @@ export default function Login() {
           <p className="mt-2 text-sm leading-4 text-slate-600">
             Silakan masuk atau daftar terlebih dahulu untuk melanjutkan.
           </p>
+          {error && <p className="text-red-500 mt-2">{error}</p>}
         </div>
 
         <div className="mt-7 flex flex-col gap-2">
@@ -34,13 +85,15 @@ export default function Login() {
           <div className="h-px w-full bg-slate-200"></div>
         </div>
 
-        <form className="w-full">
+        <form onSubmit={handleSubmit} className="w-full">
           <label htmlFor="email" className="sr-only">
             Alamat Email
           </label>
           <input
             name="email"
             type="email"
+            value={form.email}
+            onChange={handleChange}
             required
             className="block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
             placeholder="Email"
@@ -51,18 +104,12 @@ export default function Login() {
           <input
             name="password"
             type="password"
+            value={form.password}
+            onChange={handleChange}
             required
             className="mt-2 block w-full rounded-lg border border-gray-300 px-3 py-2 shadow-sm outline-none placeholder:text-gray-400 focus:ring-2 focus:ring-black focus:ring-offset-1"
             placeholder="Password"
           />
-          {/* <p className="mb-3 mt-2 text-sm text-gray-500">
-            <a
-              href="/forgot-password"
-              className="text-blue-800 hover:text-blue-600"
-            >
-              Reset your password?
-            </a>
-          </p> */}
           <button
             type="submit"
             className="mt-2 inline-flex w-full items-center justify-center rounded-lg bg-black p-2 py-3 text-sm font-medium text-white outline-none focus:ring-2 focus:ring-black focus:ring-offset-1 disabled:bg-gray-400"

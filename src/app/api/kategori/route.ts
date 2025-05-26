@@ -19,7 +19,7 @@ export async function GET() {
       data: [],
     });
   } catch (error) {
-    console.error("Error fetching all news:", error);
+    console.error("Error fetching categories:", error);
     return NextResponse.json({
       status: 500,
       message: error,
