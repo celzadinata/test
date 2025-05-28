@@ -27,8 +27,6 @@ export default async function CategoryPage({ params, searchParams }: Params) {
     `${getInternalBaseUrl()}/api/berita/category?category=${id}`
   );
 
-  console.log("INI NEWS BY CATEGORYYY DI DALAM UHUYY", getAllNewsByCategory);
-
   const getNews = getAllNewsByCategory.data.data;
 
   return (

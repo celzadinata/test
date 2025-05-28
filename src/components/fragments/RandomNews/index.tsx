@@ -20,8 +20,6 @@ export default function RandomNewsSection({
   const newsList1 = (randomNewsLimit1.data as any).data;
   const newsList2 = (randomNewsLimit2.data as any).data;
 
-  console.log("INI ADALAH NEWS LIST 1", newsList1);
-
   return (
     <div className="flex flex-col h-1/3 items-center mt-5 gap-x-3 md:flex-col lg:flex-row">
       <div className="mb-6 lg:mb-0">

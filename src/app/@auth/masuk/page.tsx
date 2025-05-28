@@ -30,11 +30,7 @@ export default function Login() {
         body: JSON.stringify(form),
       });
 
-      console.log("INI RESSS", res);
-
       const data = await res.json();
-
-      console.log("INI DATA", data);
 
       if (data.status !== 200) {
         setError(

@@ -9,8 +9,6 @@ interface Props {
 }
 
 export default function FeaturedCategoryNewsSection({ newsByCategory }: Props) {
-  console.log("INI FEATUREDDDD:", newsByCategory);
-
   return (
     <>
       {newsByCategory && (

@@ -15,8 +15,6 @@ const bokorFont = Bokor({
   weight: "400",
 });
 
-const baseURL = process.env.NEXT_PUBLIC_NEXT_SERVER_URL;
-
 export default async function Home() {
   const randomNewsLimit2: any = await getData(
     `${getInternalBaseUrl()}/api/berita/random?limit=2`
@@ -49,8 +47,6 @@ export default async function Home() {
       };
     })
   );
-
-  console.log("INI FILTEREEDD", filteredCategories);
 
   return (
     <div>

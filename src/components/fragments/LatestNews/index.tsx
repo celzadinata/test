@@ -14,10 +14,6 @@ interface Props {
 export default function LatestNewsSection({ latestNews }: Props) {
   const latestnewsList = (latestNews.data as any).data;
 
-  latestnewsList.slice(0, 1).map((item: any) => {
-    console.log("INI TITLE : ", item.created_by.username);
-  });
-
   return (
     <div className="bg-white text-black min-h-screen">
       <div className="container mx-auto px-4 md:px-0 py-6">
