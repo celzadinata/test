@@ -1,5 +1,5 @@
 import { registerUser } from "@/utils/backend/auth";
-import { DecodeJWT } from "@/utils/helper/decodeJwt";
+import { decodeJwt } from "@/utils/helper/DecodeJWT";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {
@@ -16,7 +16,7 @@ export async function POST(req: NextRequest) {
     }
 
     const token = response.data.token;
-    const decoded = DecodeJWT(token);
+    const decoded = decodeJwt(token);
 
     let maxAge = 60 * 60;
 

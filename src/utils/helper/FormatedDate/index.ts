@@ -1,4 +1,4 @@
-export function FormatedDate(tanggalISO: string) {
+export function formatedDate(tanggalISO: string) {
   const tanggal = new Date(tanggalISO);
   return tanggal.toLocaleDateString("id-ID", {
     day: "numeric",
@@ -7,7 +7,7 @@ export function FormatedDate(tanggalISO: string) {
   });
 }
 
-export function TimeAgo(dateString: string): string {
+export function timeAgo(dateString: string): string {
   const date = new Date(dateString);
   const now = new Date();
   const diff = now.getTime() - date.getTime(); // dalam ms

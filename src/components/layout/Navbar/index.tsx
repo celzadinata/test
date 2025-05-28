@@ -17,8 +17,9 @@ import {
 import { Bokor } from "next/font/google";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
-import { CategoryType } from "@/utils/helper/Type";
 import { getData } from "@/services";
+import { CategoryType } from "@/utils/helper/TypeHelper";
+import { getInternalBaseUrl } from "@/utils/helper/Internal";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -30,7 +31,7 @@ type NavItems = {
   href: string;
 };
 
-const baseURL = process.env.NEXT_PUBLIC_NEXT_SERVER_URL;
+// const baseURL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 export default function Navbar() {
   const [navItems, setNavItems] = useState<NavItems[]>([
@@ -54,11 +55,11 @@ export default function Navbar() {
   useEffect(() => {
     async function fetchCategories() {
       try {
-        const { data } = await getData(`${baseURL}/api/kategori`);
+        const { data } = await getData("/api/kategori");
 
         const dynamicNavItems: NavItems[] = data.map((item: CategoryType) => ({
           name: item.category_name,
-          href: `/${item.category_name.toLowerCase().replace(/\s+/g, "-")}`,
+          href: `/${item.category_name}?id=${item.id}`,
         }));
         setNavItems((prev) => [...prev, ...dynamicNavItems]);
       } catch (error) {

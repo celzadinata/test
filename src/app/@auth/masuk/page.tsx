@@ -1,7 +1,7 @@
 "use client";
 
 import Modal from "@/components/core/Modal";
-import { LoginFormType } from "@/utils/helper/Type";
+import { LoginFormType } from "@/utils/helper/TypeHelper";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { useState } from "react";

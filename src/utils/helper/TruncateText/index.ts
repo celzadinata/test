@@ -1,4 +1,4 @@
-export default function TruncateText(
+export default function truncateText(
   text: string,
   maxLength = 100,
   useSentences = false

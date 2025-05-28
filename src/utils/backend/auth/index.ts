@@ -1,4 +1,4 @@
-import { AuthResponse } from "@/utils/helper/Type";
+import { AuthResponse } from "@/utils/helper/TypeHelper";
 
 const baseURL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 

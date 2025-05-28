@@ -8,6 +8,7 @@ import Logo from "../../public/assets/cam-logo-dark.svg";
 import Image from "next/image";
 import { Bokor } from "next/font/google";
 import { getData } from "@/services";
+import { getInternalBaseUrl } from "@/utils/helper/Internal";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -18,15 +19,38 @@ const baseURL = process.env.NEXT_PUBLIC_NEXT_SERVER_URL;
 
 export default async function Home() {
   const randomNewsLimit2: any = await getData(
-    `${baseURL}/api/berita/random?limit=2`
+    `${getInternalBaseUrl()}/api/berita/random?limit=2`
   );
   const randomNewsLimit1: any = await getData(
-    `${baseURL}/api/berita/random?limit=1`
+    `${getInternalBaseUrl()}/api/berita/random?limit=1`
   );
 
-  // const allNews: any = await getData("http://localhost:3000/api/berita");
+  const allNews: any = await getData(`${getInternalBaseUrl()}/api/berita`);
 
-  // console.log("INI GET ALL NEWSS", allNews);
+  const allCategories: any = await getData(
+    `${getInternalBaseUrl()}/api/kategori`
+  );
+
+  async function getNewsByCategory(categoryId: string) {
+    const res = await getData(
+      `${getInternalBaseUrl()}/api/berita/category?category=${categoryId}`
+    );
+
+    return res;
+  }
+
+  const filteredCategories = await Promise.all(
+    allCategories.data.map(async (item: any) => {
+      const news = await getNewsByCategory(item.id);
+      return {
+        category_id: item.id,
+        category_name: item.category_name,
+        news,
+      };
+    })
+  );
+
+  console.log("INI FILTEREEDD", filteredCategories);
 
   return (
     <div>
@@ -52,9 +76,9 @@ export default async function Home() {
         randomNewsLimit1={randomNewsLimit1}
         randomNewsLimit2={randomNewsLimit2}
       />
-      {/* <LatestNewsSection randomNews={randomNews} /> */}
-      {/* <FeaturedCategoryNewsSection randomNews={randomNews} /> */}
-      {/* <CategoryNewsSection allNews={allNews} /> */}
+      <LatestNewsSection latestNews={allNews} />
+      <FeaturedCategoryNewsSection newsByCategory={filteredCategories} />
+      <CategoryNewsSection newsByCategory={filteredCategories} />
     </div>
   );
 }
