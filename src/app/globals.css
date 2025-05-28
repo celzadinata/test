@@ -76,6 +76,10 @@
 }
 
 :root {
+  --font-lora: "Lora", serif;
+
+  --font-bokor: "Bokor", serif;
+
   --radius: 0.625rem;
 
   --background: oklch(1 0 0);
@@ -203,6 +207,10 @@
   --sidebar-border: oklch(1 0 0 / 10%);
 
   --sidebar-ring: oklch(0.556 0 0);
+}
+
+body {
+  font-family: var(--font-lora); /* Lora for body text */
 }
 
 @layer base {

@@ -1,29 +1,31 @@
-import { getAllNews, getNewsDetail } from "@/utils/DummyApi/news";
+import { getAllNews, getNewsById } from "@/utils/backend/news";
 import { NextRequest, NextResponse } from "next/server";
 
 export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url);
   const id = searchParams.get("id");
-  const slug = searchParams.get("slug");
 
-  if (id && slug) {
-    const newsDetail = await getNewsDetail(id, slug);
-    if (newsDetail) {
+  if (id) {
+    const response = await getNewsById(id);
+    if (response.statusCode === 200) {
       return NextResponse.json({
-        status: 200,
-        message: "Success",
-        data: newsDetail,
+        status: response.statusCode,
+        message: response.message,
+        data: response.data,
       });
     }
 
     return NextResponse.json({
-      status: 404,
-      message: "Product not found",
-      data: {},
+      status: response.statusCode,
+      message: response.message,
     });
   }
 
-  const news = await getAllNews();
+  const response = await getAllNews();
 
-  return NextResponse.json({ status: 200, message: "Success", data: news });
+  return NextResponse.json({
+    status: response.statusCode,
+    message: response.message,
+    data: response.data,
+  });
 }

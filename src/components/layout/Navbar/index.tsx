@@ -1,11 +1,11 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../../public/assets/cam-logo.svg";
 import LogoDark from "../../../../public/assets/cam-logo-dark.svg";
-import { Search, X, TextSearch } from "lucide-react";
+import { Search, X, TextSearch, LogIn } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -15,88 +15,100 @@ import {
   SheetClose,
 } from "@/components/ui/sheet";
 import { Bokor } from "next/font/google";
-import { useRouter } from "next/navigation";
+import { useRouter, usePathname, useSearchParams } from "next/navigation";
+import { useMediaQuery } from "@/utils/hooks/use-media-query";
+import { getData } from "@/services";
+import { CategoryType } from "@/utils/helper/TypeHelper";
+import { getInternalBaseUrl } from "@/utils/helper/Internal";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
   weight: "400",
 });
 
+type NavItems = {
+  name: string;
+  href: string;
+};
+
+// const baseURL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
+
 export default function Navbar() {
+  const [navItems, setNavItems] = useState<NavItems[]>([
+    { name: "Berita", href: "/" },
+  ]);
   const [isSearchOpen, setIsSearchOpen] = useState<boolean>(false);
+  const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMenuSearchOpen, setIsMenuSearchOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
-  const [isMobile, setIsMobile] = useState<boolean>(false);
+  const isMobile = useMediaQuery("(max-width: 767px)");
+  const pathname = usePathname();
 
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const inputRef = useRef<HTMLInputElement>(null);
 
   const openLoginModal = () => {
     router.push("/masuk");
   };
 
-  type NavItems = {
-    name: string;
-    href: string;
+  useEffect(() => {
+    async function fetchCategories() {
+      try {
+        const { data } = await getData("/api/kategori");
+
+        const dynamicNavItems: NavItems[] = data.map((item: CategoryType) => ({
+          name: item.category_name,
+          href: `/${item.category_name}?id=${item.id}`,
+        }));
+        setNavItems((prev) => [...prev, ...dynamicNavItems]);
+      } catch (error) {
+        console.error(error);
+      }
+    }
+    fetchCategories();
+  }, []);
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && searchQuery.trim()) {
+      router.push(`/berita?search=${encodeURIComponent(searchQuery.trim())}`);
+      inputRef.current?.blur();
+    }
   };
 
-  const navItems: NavItems[] = [
-    { name: "Berita", href: "/" },
-    { name: "Nasional", href: "/nasional" },
-    { name: "Internasional", href: "/internasional" },
-    { name: "Mega Politik", href: "/mega-politik" },
-    { name: "Lokal", href: "/lokal" },
-  ];
-
   useEffect(() => {
-    // Check if window is defined (to avoid SSR issues)
-    if (typeof window !== "undefined") {
-      // Initial check for mobile
-      setIsMobile(window.innerWidth < 768);
-
-      // Add listener for resize
-      const handleResize = () => {
-        setIsMobile(window.innerWidth < 768);
-      };
-
-      window.addEventListener("resize", handleResize);
-      return () => {
-        window.removeEventListener("resize", handleResize);
-      };
-    }
-  }, []);
+    setSearchQuery(searchParams.get("search") || "");
+  }, [searchParams]);
 
   useEffect(() => {
     let lastScrollY = window.scrollY;
     let ticking = false;
+    let timer: NodeJS.Timeout;
 
     const handleScroll = () => {
       lastScrollY = window.scrollY;
 
-      if (!ticking) {
-        window.requestAnimationFrame(() => {
-          // Use a higher threshold for scrolling down than scrolling up
-          // This creates a "sticky" effect and prevents flickering
-          const shouldBeScrolled = lastScrollY > 150;
-
-          if (shouldBeScrolled !== scrolled) {
-            setScrolled(shouldBeScrolled);
-          }
-
-          ticking = false;
-        });
-
-        ticking = true;
-      }
+      clearTimeout(timer);
+      timer = setTimeout(() => {
+        if (!ticking) {
+          window.requestAnimationFrame(() => {
+            setScrolled(lastScrollY > 300); // Threshold for scroll detection
+            ticking = false;
+          });
+          ticking = true;
+        }
+      }, 150); // Delay for smoother transition
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
     return () => {
       window.removeEventListener("scroll", handleScroll);
+      clearTimeout(timer);
     };
-  }, [scrolled]);
+  }, []);
 
   return (
-    <header className="flex flex-col w-full sticky top-0 z-50">
+    <header className="flex flex-col w-full sticky top-0 z-50 will-change-transform">
       {/* Top bar */}
       <div className="bg-black text-white py-3 md:py-4 px-3 md:px-6 flex items-center justify-between relative">
         {/* Search section - only visible on desktop */}
@@ -114,16 +126,25 @@ export default function Navbar() {
           ) : (
             <div className="flex items-center">
               <Input
+                ref={inputRef}
                 type="text"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                onKeyDown={handleKeyDown}
                 placeholder="Cari berita"
                 className="h-8 bg-gray-800 border-gray-700 text-white text-sm w-64"
                 autoFocus
               />
+
               <Button
                 variant="ghost"
                 size="sm"
                 className="text-white h-8 p-0 ml-1"
-                onClick={() => setIsSearchOpen(false)}
+                onClick={() => {
+                  setSearchQuery("");
+                  setIsSearchOpen(false);
+                  router.push("/");
+                }}
               >
                 <X className="h-4 w-4" />
               </Button>
@@ -131,52 +152,42 @@ export default function Navbar() {
           )}
         </div>
 
-        {/* Empty div for mobile to maintain layout */}
-        <div className="md:hidden"></div>
-
-        {/* Center logo - visible when scrolled OR on mobile */}
+        {/* Center logo - always visible on non-homepage routes, conditional on homepage */}
         <div
-          className={`absolute left-1/2 transform -translate-x-1/2 flex items-center gap-1 transition-all duration-300 ease-in-out ${
-            scrolled
-              ? "opacity-100 translate-y-0"
-              : "opacity-0 -translate-y-4 pointer-events-none"
-          } ${
-            isMobile
-              ? "opacity-100 w-full translate-y-0"
-              : "opacity-0 -translate-y-4 pointer-events-none"
+          className={`ml-2 flex items-center gap-1 transition-all duration-500 ease-in-out md:absolute md:left-1/2 md:transform md:-translate-x-1/2 ${
+            pathname !== "/" || isMobile || scrolled
+              ? "opacity-100 scale-100"
+              : "opacity-0 scale-95 pointer-events-none"
           }`}
         >
-          <div className="relative w-12 h-12 md:w-15 md:h-15">
+          <div className="relative w-10 h-10 md:w-12 md:h-12">
             <Image
               src={Logo}
               alt="Camera icon"
               width={44}
               height={44}
               className="w-full h-full"
+              priority
             />
           </div>
-          <h1
-            className={`text-3xl md:text-4xl text-white ${bokorFont.className}`}
-          >
-            Warung Jurnalis
-          </h1>
+          <Link href="/">
+            <h1
+              className={`text-2xl md:text-3xl text-white ${bokorFont.className}`}
+            >
+              Warung Jurnalis
+            </h1>
+          </Link>
         </div>
 
         {/* Auth buttons - only visible on desktop */}
         <div className="hidden md:flex items-center gap-2">
           <Button
-            variant="default"
-            size="sm"
             onClick={openLoginModal}
-            className="bg-blue-500 hover:bg-blue-600 text-white text-sm h-8 px-3"
-          >
-            Daftar
-          </Button>
-          <Button
             variant="ghost"
             size="sm"
-            className="text-white border-1 hover:bg-white hover:text-black text-sm h-8 px-3"
+            className="text-white border-1 hover:bg-white cursor-pointer hover:text-black text-sm h-8 px-3"
           >
+            <LogIn />
             Masuk
           </Button>
         </div>
@@ -203,11 +214,14 @@ export default function Navbar() {
                   alt="Camera icon"
                   width={52}
                   height={52}
+                  priority
                 />
               </div>
-              <h2 className={`text-3xl ml-1 ${bokorFont.className}`}>
-                Warung Jurnalis
-              </h2>
+              <Link href="/">
+                <h2 className={`text-3xl ml-1 ${bokorFont.className}`}>
+                  Warung Jurnalis
+                </h2>
+              </Link>
             </div>
 
             {/* Search in mobile menu */}
@@ -270,48 +284,16 @@ export default function Navbar() {
               <SheetClose asChild>
                 <Button
                   onClick={openLoginModal}
-                  className="w-full bg-blue-500 hover:bg-blue-600"
+                  variant="outline"
+                  className="w-full"
                 >
-                  Daftar
-                </Button>
-              </SheetClose>
-              <SheetClose asChild>
-                <Button variant="outline" className="w-full">
+                  <LogIn />
                   Masuk
                 </Button>
               </SheetClose>
             </div>
           </SheetContent>
         </Sheet>
-      </div>
-
-      {/* Logo - only visible when not scrolled AND on desktop */}
-      <div
-        className={`flex justify-center py-0 bg-white transition-all duration-300 ease-in-out ${
-          scrolled || isMobile
-            ? "max-h-0 opacity-0 overflow-hidden"
-            : "max-h-36 py-4 md:py-6 opacity-100"
-        }`}
-      >
-        <Link
-          href="/"
-          className="flex flex-col md:flex-row items-center gap-1 md:gap-2"
-        >
-          <div className="relative w-24 h-24 md:w-32 md:h-32">
-            <Image
-              src={LogoDark}
-              alt="Camera icon"
-              width={128}
-              height={128}
-              className="w-full h-full"
-            />
-          </div>
-          <h1
-            className={`text-4xl md:text-6xl lg:text-7xl ${bokorFont.className}`}
-          >
-            Warung Jurnalis
-          </h1>
-        </Link>
       </div>
 
       {/* Navigation */}
