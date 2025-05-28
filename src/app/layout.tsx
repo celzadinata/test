@@ -3,7 +3,7 @@ import { Bokor, Lora } from "next/font/google";
 import "./globals.css";
 import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
-import AdSense from "@/components/core/AdSense";
+import AdSense from "@/components/core/Adsense";
 
 const bokor = Bokor({
   variable: "--font-bokor",

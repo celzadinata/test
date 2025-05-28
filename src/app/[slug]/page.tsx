@@ -1,5 +1,4 @@
 import { getData } from "@/services";
-import { getAllNews } from "@/utils/DummyApi/news";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import { timeAgo } from "@/utils/helper/FormatedDate";
 import { getInternalBaseUrl } from "@/utils/helper/Internal";

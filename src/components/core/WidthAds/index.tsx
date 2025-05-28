@@ -3,7 +3,7 @@
 import dynamic from "next/dynamic";
 
 // Load AdBanner client-side only
-const AdBanner = dynamic(() => import("../AdBanner"), {
+const AdBanner = dynamic(() => import("../Adbanner"), {
   ssr: false,
   loading: () => (
     <div className="bg-gray-200 h-38 flex items-center justify-center">
