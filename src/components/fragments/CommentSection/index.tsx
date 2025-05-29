@@ -1,24 +1,22 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Image from "next/image";
 
-import Dummy from "../../../../public/assets/oasis-band-candid-g1wd1knn8tmu2y5g.jpg";
 import { MessageCircleMore } from "lucide-react";
 
 export default function CommentSection() {
   const [comment, setComment] = useState<string>("");
-  const [dropdowns, setDropdowns] = useState<{
-    dropdownComment1: boolean;
-    dropdownComment2: boolean;
-    dropdownComment3: boolean;
-    dropdownComment4: boolean;
-  }>({
-    dropdownComment1: false,
-    dropdownComment2: false,
-    dropdownComment3: false,
-    dropdownComment4: false,
-  });
+  // const [dropdowns, setDropdowns] = useState<{
+  //   dropdownComment1: boolean;
+  //   dropdownComment2: boolean;
+  //   dropdownComment3: boolean;
+  //   dropdownComment4: boolean;
+  // }>({
+  //   dropdownComment1: false,
+  //   dropdownComment2: false,
+  //   dropdownComment3: false,
+  //   dropdownComment4: false,
+  // });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -26,12 +24,12 @@ export default function CommentSection() {
     setComment("");
   };
 
-  const toggleDropdown = (dropdownId: keyof typeof dropdowns) => {
-    setDropdowns((prev) => ({
-      ...prev,
-      [dropdownId]: !prev[dropdownId],
-    }));
-  };
+  // const toggleDropdown = (dropdownId: keyof typeof dropdowns) => {
+  //   setDropdowns((prev) => ({
+  //     ...prev,
+  //     [dropdownId]: !prev[dropdownId],
+  //   }));
+  // };
 
   return (
     <div className="bg-white border-t border-black py-4 lg:py-16 antialiased">

@@ -1,7 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
 
-import Dummy from "../../../../public/assets/oasis-band-candid-g1wd1knn8tmu2y5g.jpg";
 import TruncateText from "@/utils/helper/TruncateText";
 import SmallAds from "@/components/core/SmallAds";
 import { FileType } from "@/utils/helper/TypeHelper";
