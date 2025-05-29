@@ -6,17 +6,17 @@ import { MessageCircleMore } from "lucide-react";
 
 export default function CommentSection() {
   const [comment, setComment] = useState<string>("");
-  const [dropdowns, setDropdowns] = useState<{
-    dropdownComment1: boolean;
-    dropdownComment2: boolean;
-    dropdownComment3: boolean;
-    dropdownComment4: boolean;
-  }>({
-    dropdownComment1: false,
-    dropdownComment2: false,
-    dropdownComment3: false,
-    dropdownComment4: false,
-  });
+  // const [dropdowns, setDropdowns] = useState<{
+  //   dropdownComment1: boolean;
+  //   dropdownComment2: boolean;
+  //   dropdownComment3: boolean;
+  //   dropdownComment4: boolean;
+  // }>({
+  //   dropdownComment1: false,
+  //   dropdownComment2: false,
+  //   dropdownComment3: false,
+  //   dropdownComment4: false,
+  // });
 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
