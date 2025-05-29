@@ -1,11 +1,9 @@
 import { getData } from "@/services";
-import { getAllNews } from "@/utils/DummyApi/news";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import { timeAgo } from "@/utils/helper/FormatedDate";
 import { getInternalBaseUrl } from "@/utils/helper/Internal";
 import truncateText from "@/utils/helper/TruncateText";
 import { FileType } from "@/utils/helper/TypeHelper";
-import { log } from "console";
 import { Bokor } from "next/font/google";
 import Image from "next/image";
 

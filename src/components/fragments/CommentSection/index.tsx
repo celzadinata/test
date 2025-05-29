@@ -1,9 +1,7 @@
 "use client";
 
 import { useState, FormEvent } from "react";
-import Image from "next/image";
 
-import Dummy from "../../../../public/assets/oasis-band-candid-g1wd1knn8tmu2y5g.jpg";
 import { MessageCircleMore } from "lucide-react";
 
 export default function CommentSection() {
