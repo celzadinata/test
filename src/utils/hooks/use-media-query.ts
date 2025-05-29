@@ -30,9 +30,12 @@ export function useMediaQuery(query: string): boolean {
 }
 
 // Simple debounce function
-function debounce(fn: Function, delay: number) {
+function debounce<T extends (...args: any[]) => void>(
+  fn: T,
+  delay: number
+): (...args: Parameters<T>) => void {
   let timeoutId: NodeJS.Timeout;
-  return (...args: any[]) => {
+  return (...args: Parameters<T>) => {
     clearTimeout(timeoutId);
     timeoutId = setTimeout(() => fn(...args), delay);
   };
