@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { Bokor, Lora } from "next/font/google";
 import "./globals.css";
-import Navbar from "@/components/layout/Navbar";
 import { Footer } from "@/components/layout/Footer";
 import AdSense from "@/components/core/AdSense";
+import NavbarWrapper from "@/components/layout/NavbarWrapper";
 
 const bokor = Bokor({
   variable: "--font-bokor",
@@ -37,7 +37,7 @@ export default function RootLayout({
         <AdSense pId={adsenseClientId!} />
       </head>
       <body className={`${lora.variable} ${bokor.variable} antialiased`}>
-        <Navbar />
+        <NavbarWrapper />
         <div className="container mx-auto">
           {auth}
           {children}

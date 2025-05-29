@@ -1,5 +1,7 @@
 "use client";
 
+import type React from "react";
+
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -18,7 +20,7 @@ import { Bokor } from "next/font/google";
 import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
 import { getData } from "@/services";
-import { CategoryType } from "@/utils/helper/TypeHelper";
+import type { CategoryType } from "@/utils/helper/TypeHelper";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -29,8 +31,6 @@ type NavItems = {
   name: string;
   href: string;
 };
-
-// const baseURL = process.env.NEXT_PUBLIC_BACKEND_BASE_URL;
 
 export default function Navbar() {
   const [navItems, setNavItems] = useState<NavItems[]>([
@@ -46,6 +46,7 @@ export default function Navbar() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
+  const [mobileSearchQuery, setMobileSearchQuery] = useState<string>("");
 
   const openLoginModal = () => {
     router.push("/masuk");
@@ -72,11 +73,25 @@ export default function Navbar() {
     if (e.key === "Enter" && searchQuery.trim()) {
       router.push(`/berita?search=${encodeURIComponent(searchQuery.trim())}`);
       inputRef.current?.blur();
+      setIsSearchOpen(false);
+    }
+  };
+
+  const handleMobileSearch = () => {
+    if (mobileSearchQuery.trim()) {
+      router.push(
+        `/berita?search=${encodeURIComponent(mobileSearchQuery.trim())}`
+      );
+      setIsMenuSearchOpen(false);
+      setMobileSearchQuery("");
     }
   };
 
   useEffect(() => {
-    setSearchQuery(searchParams.get("search") || "");
+    const search = searchParams.get("search");
+    if (search) {
+      setSearchQuery(search);
+    }
   }, [searchParams]);
 
   useEffect(() => {
@@ -91,12 +106,12 @@ export default function Navbar() {
       timer = setTimeout(() => {
         if (!ticking) {
           window.requestAnimationFrame(() => {
-            setScrolled(lastScrollY > 300); // Threshold for scroll detection
+            setScrolled(lastScrollY > 300);
             ticking = false;
           });
           ticking = true;
         }
-      }, 150); // Delay for smoother transition
+      }, 150);
     };
 
     window.addEventListener("scroll", handleScroll, { passive: true });
@@ -161,7 +176,7 @@ export default function Navbar() {
         >
           <div className="relative w-10 h-10 md:w-12 md:h-12">
             <Image
-              src={Logo}
+              src={Logo || "/placeholder.svg"}
               alt="Camera icon"
               width={44}
               height={44}
@@ -209,7 +224,7 @@ export default function Navbar() {
             <div className="flex justify-center mb-6 mt-4">
               <div className="relative w-10 h-10">
                 <Image
-                  src={LogoDark}
+                  src={LogoDark || "/placeholder.svg"}
                   alt="Camera icon"
                   width={52}
                   height={52}
@@ -240,6 +255,13 @@ export default function Navbar() {
                   <div className="flex items-center">
                     <Input
                       type="text"
+                      value={mobileSearchQuery}
+                      onChange={(e) => setMobileSearchQuery(e.target.value)}
+                      onKeyDown={(e) => {
+                        if (e.key === "Enter") {
+                          handleMobileSearch();
+                        }
+                      }}
                       placeholder="Cari berita"
                       className="h-9 text-sm"
                       autoFocus
@@ -257,6 +279,7 @@ export default function Navbar() {
                     variant="default"
                     size="sm"
                     className="bg-blue-500 hover:bg-blue-600"
+                    onClick={handleMobileSearch}
                   >
                     Cari
                   </Button>
