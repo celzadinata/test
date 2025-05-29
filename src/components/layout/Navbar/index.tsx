@@ -19,7 +19,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
 import { getData } from "@/services";
 import { CategoryType } from "@/utils/helper/TypeHelper";
-import { getInternalBaseUrl } from "@/utils/helper/Internal";
 
 const bokorFont = Bokor({
   subsets: ["latin"],

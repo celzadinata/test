@@ -76,7 +76,8 @@ export default function NewsPage() {
                     Ini adalah deskripsi singkat tentang berita. Deskripsi ini
                     memberikan gambaran umum tentang isi berita tanpa
                     mengungkapkan seluruh detailnya. Pembaca dapat mengklik
-                    tombol "Baca Selengkapnya" untuk melihat berita lengkap.
+                    tombol &quot;Baca Selengkapnya&quot; untuk melihat berita
+                    lengkap.
                   </p>
                 </CardContent>
                 <CardFooter className="flex justify-between">

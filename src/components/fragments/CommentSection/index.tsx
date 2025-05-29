@@ -24,12 +24,12 @@ export default function CommentSection() {
     setComment("");
   };
 
-  const toggleDropdown = (dropdownId: keyof typeof dropdowns) => {
-    setDropdowns((prev) => ({
-      ...prev,
-      [dropdownId]: !prev[dropdownId],
-    }));
-  };
+  // const toggleDropdown = (dropdownId: keyof typeof dropdowns) => {
+  //   setDropdowns((prev) => ({
+  //     ...prev,
+  //     [dropdownId]: !prev[dropdownId],
+  //   }));
+  // };
 
   return (
     <div className="bg-white border-t border-black py-4 lg:py-16 antialiased">
