@@ -44,7 +44,7 @@ export default function Login() {
 
       router.back();
     } catch (err) {
-      setError("Terjadi kesalahan saat login");
+      setError(`Terjadi kesalahan saat login ${err}`);
     }
   };
 
