@@ -3,7 +3,7 @@ import { FileType } from "@/utils/helper/TypeHelper";
 import Image from "next/image";
 import Link from "next/link";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
-import { formatedDate, timeAgo } from "@/utils/helper/FormatedDate";
+import { formatedDate } from "@/utils/helper/FormatedDate";
 
 interface Props {
   newsByCategory: any;
