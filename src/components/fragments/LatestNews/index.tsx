@@ -1,7 +1,7 @@
 import SmallAds from "@/components/core/SmallAds";
 import WidthAds from "@/components/core/WidthAds";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
-import { timeAgo } from "@/utils/helper/FormatedDate";
+import { formatedDate, timeAgo } from "@/utils/helper/FormatedDate";
 import truncateText from "@/utils/helper/TruncateText";
 import { FileType } from "@/utils/helper/TypeHelper";
 import Image from "next/image";
@@ -9,10 +9,32 @@ import Link from "next/link";
 
 interface Props {
   latestNews: any;
+  newsByCategory: (
+    category_id: string,
+    page?: string,
+    limit?: string,
+    random?: string
+  ) => Promise<any>;
 }
 
-export default function LatestNewsSection({ latestNews }: Props) {
-  const latestnewsList = (latestNews.data as any).data;
+export default async function LatestNewsSection({
+  latestNews,
+  newsByCategory,
+}: Props) {
+  const latestNewsList = (latestNews.data as any).data;
+
+  console.log("INI LATEST NEWS: ", latestNewsList);
+
+  const filteredNews = await Promise.all(
+    latestNewsList.slice(1, 2).map(async (item: any) => {
+      const news = await newsByCategory(item.category_id.id, "1", "0", "true");
+      return {
+        category_id: item.category_id.id,
+        category_name: item.category_id.category_name,
+        news: news.data,
+      };
+    })
+  );
 
   return (
     <div className="bg-white text-black min-h-screen">
@@ -23,8 +45,8 @@ export default function LatestNewsSection({ latestNews }: Props) {
           <div className="lg:col-span-3 border-t border-b border-black">
             {/* Top headline article */}
             <div className="py-6 border-b border-black">
-              {latestnewsList &&
-                latestnewsList.slice(0, 1).map((item: any, index: number) => (
+              {latestNewsList &&
+                latestNewsList.slice(0, 1).map((item: any, index: number) => (
                   <div
                     key={index}
                     className="group flex flex-col md:flex-row gap-4"
@@ -35,9 +57,8 @@ export default function LatestNewsSection({ latestNews }: Props) {
                           {item.title}
                         </h1>
                       </Link>
-                      <hr />
-                      <div className="mb-4 text-xs text-black/80">
-                        {timeAgo(item.created_at)}
+                      <div className="mb-4 mt-1 text-xs text-black/80">
+                        {item.created_by.username} | {timeAgo(item.created_at)}
                       </div>
                       <div className="space-y-3 mb-4">
                         <p className="text-sm">
@@ -63,7 +84,7 @@ export default function LatestNewsSection({ latestNews }: Props) {
                             <div className="relative rounded-md w-full h-[250px] md:w-[500px] md:h-[300px] overflow-hidden bg-cover cursor-pointer bg-no-repeat">
                               <Image
                                 src={file.url}
-                                alt="News Headline"
+                                alt={item.slug}
                                 width={500}
                                 height={300}
                                 className="w-full rounded-md transition duration-300 ease-in-out group-hover:scale-110"
@@ -78,48 +99,62 @@ export default function LatestNewsSection({ latestNews }: Props) {
 
             {/* Second article */}
             <div className="py-6">
-              {latestnewsList &&
-                latestnewsList.slice(1, 2).map((item: any, index: number) => (
+              {latestNewsList &&
+                latestNewsList.slice(1, 2).map((item: any, index: number) => (
                   <div
                     key={index}
                     className="group flex flex-col md:flex-row gap-4"
                   >
                     <div className="md:w-1/2">
-                      <h2 className="text-xl md:text-2xl font-extrabold cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
-                        {item.title}
-                      </h2>
-                      <hr />
-                      <div className="mb-4 text-xs text-black/80">
-                        {timeAgo(item.created_at)}
+                      <Link href={`/berita/${item.id}/${item.slug}`}>
+                        <h2 className="text-xl md:text-2xl font-extrabold cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
+                          {item.title}
+                        </h2>
+                      </Link>
+                      <div className="mb-4 mt-1 text-xs text-black/80">
+                        {item.created_by.username} | {timeAgo(item.created_at)}
                       </div>
-                      <p className="text-sm mb-4">
+                      <p className="text-sm mb-1">
                         {truncateText(extractPlainTextFromHTML(item.body), 200)}
                       </p>
                       <div className="mt-4">
-                        <div className="text-red-600 text-md font-bold cursor-pointer hover:text-red-400">
-                          Berita terkait {">"}
-                        </div>
-                        <p className="text-sm">
-                          Reportase Kasus Korupsi Timah 271 Triliun dari
-                          Kacamata Hukum
-                        </p>
+                        {filteredNews
+                          .slice(0, 1)
+                          .map((item: any, index: number) => (
+                            <div key={index}>
+                              {item.news.data.map(
+                                (data: any, index: number) => (
+                                  <Link
+                                    key={index}
+                                    href={`/${item.category_name}?id=${item.category_id}`}
+                                  >
+                                    <div className="text-red-600 text-md font-bold cursor-pointer hover:text-red-400">
+                                      Berita terkait {">"}
+                                    </div>
+                                    <p className="text-sm">{data.title}</p>
+                                  </Link>
+                                )
+                              )}
+                            </div>
+                          ))}
                       </div>
                     </div>
                     {item.files.slice(0, 1).map(
                       (file: FileType, index: number) =>
                         file.description === "HEADLINE" && (
-                          <div
+                          <Link
+                            href={`/berita/${item.id}/${item.slug}`}
                             key={index}
                             className="relative w-full h-[250px] md:w-[500px] md:h-[300px] rounded-md overflow-hidden cursor-pointer bg-cover bg-no-repeat"
                           >
                             <Image
                               src={file.url}
-                              alt="News Headline"
+                              alt={item.slug}
                               width={500}
                               height={300}
                               className="w-full rounded-md transition duration-300 ease-in-out group-hover:scale-110"
                             />
-                          </div>
+                          </Link>
                         )
                     )}
                   </div>
@@ -134,8 +169,8 @@ export default function LatestNewsSection({ latestNews }: Props) {
               <hr className="mb-3 " />
 
               <div className="space-y-4">
-                {latestnewsList &&
-                  latestnewsList.slice(2, 5).map((item: any, index: number) => (
+                {latestNewsList &&
+                  latestNewsList.slice(2, 5).map((item: any, index: number) => (
                     <div
                       key={index}
                       className="pb-3 border-b border-gray-300 hover:text-gray-500 cursor-pointer"
