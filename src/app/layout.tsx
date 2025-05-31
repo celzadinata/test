@@ -2,8 +2,8 @@ import type { Metadata } from "next";
 import { Bokor, Lora } from "next/font/google";
 import "./globals.css";
 import { Footer } from "@/components/layout/Footer";
-import AdSense from "@/components/core/AdSense";
 import NavbarWrapper from "@/components/layout/NavbarWrapper";
+import AdSense from "@/components/core/Adsense";
 
 const bokor = Bokor({
   variable: "--font-bokor",

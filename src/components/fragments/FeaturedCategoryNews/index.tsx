@@ -3,6 +3,7 @@ import { FileType } from "@/utils/helper/TypeHelper";
 import Image from "next/image";
 import Link from "next/link";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
+import { formatedDate, timeAgo } from "@/utils/helper/FormatedDate";
 
 interface Props {
   newsByCategory: any;
@@ -37,10 +38,14 @@ export default function FeaturedCategoryNewsSection({ newsByCategory }: Props) {
                   >
                     <div className="md:col-span-1">
                       <Link href={`/berita/${data.id}/${data.slug}`}>
-                        <h2 className="text-2xl font-bold mb-3 cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
+                        <h2 className="text-2xl font-bold mb-1 cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
                           {data.title}
                         </h2>
                       </Link>
+                      <div className="mb-3 text-xs text-black/80">
+                        {data.created_by.username} |{" "}
+                        {formatedDate(data.created_at)}
+                      </div>
                       <p className="text-gray-700">
                         {truncateText(extractPlainTextFromHTML(data.body), 250)}
                       </p>
@@ -51,7 +56,7 @@ export default function FeaturedCategoryNewsSection({ newsByCategory }: Props) {
                         file.description === "HEADLINE" && (
                           <div
                             key={index}
-                            className="md:col-span-1 mt-2 md:mt-0 rounded-md overflow-hidden cursor-pointer bg-cover bg-no-repeat"
+                            className="md:col-span-1 mt-2 md:h-[300px]  md:mt-0 rounded-md overflow-hidden cursor-pointer bg-cover bg-no-repeat"
                           >
                             <Link href={`/berita/${data.id}/${data.slug}`}>
                               <Image
@@ -59,7 +64,7 @@ export default function FeaturedCategoryNewsSection({ newsByCategory }: Props) {
                                 alt="Headline image"
                                 width={500}
                                 height={300}
-                                className="w-full h-[200px] md:h-[300px] rounded-md transition duration-300 ease-in-out group-hover:scale-110"
+                                className="w-full h-[200px] md:h-auto rounded-md transition duration-300 ease-in-out group-hover:scale-110"
                               />
                             </Link>
                           </div>

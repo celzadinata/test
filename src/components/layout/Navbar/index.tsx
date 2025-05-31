@@ -1,7 +1,5 @@
 "use client";
 
-import type React from "react";
-
 import { useState, useEffect, useRef } from "react";
 import Link from "next/link";
 import Image from "next/image";
@@ -21,6 +19,7 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
 import { getData } from "@/services";
 import type { CategoryType } from "@/utils/helper/TypeHelper";
+import { getInternalBaseUrl } from "@/utils/helper/Internal";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -40,6 +39,7 @@ export default function Navbar() {
   const [searchQuery, setSearchQuery] = useState<string>("");
   const [isMenuSearchOpen, setIsMenuSearchOpen] = useState<boolean>(false);
   const [scrolled, setScrolled] = useState<boolean>(false);
+  const [searchResults, setSearchResults] = useState<any>(null);
   const isMobile = useMediaQuery("(max-width: 767px)");
   const pathname = usePathname();
 
@@ -47,6 +47,26 @@ export default function Navbar() {
   const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
   const [mobileSearchQuery, setMobileSearchQuery] = useState<string>("");
+
+  useEffect(() => {
+    async function newsByTitle(query: string) {
+      if (!query.trim()) return;
+      try {
+        const news = await getData(
+          `http://localhost:3000/berita?title=${encodeURIComponent(query)}`
+        );
+
+        setSearchResults(news);
+      } catch (error) {
+        console.error("Gagal mengambil data pencarian: ", error);
+        setSearchResults(null);
+      }
+    }
+
+    if (searchQuery || mobileSearchQuery) {
+      newsByTitle(searchQuery || mobileSearchQuery);
+    }
+  }, [searchQuery, mobileSearchQuery]);
 
   const openLoginModal = () => {
     router.push("/masuk");
