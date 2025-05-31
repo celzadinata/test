@@ -29,9 +29,16 @@ export default async function Home() {
     `${getInternalBaseUrl()}/api/kategori`
   );
 
-  async function getNewsByCategory(categoryId: string) {
+  async function getNewsByCategory(
+    categoryId: string,
+    page?: string,
+    limit?: string,
+    random?: string
+  ) {
     const res = await getData(
-      `${getInternalBaseUrl()}/api/berita/category?category=${categoryId}`
+      `${getInternalBaseUrl()}/api/berita/category?category_id=${categoryId}&page=${
+        page || "1"
+      }&limit=${limit || "0"}&random=${random || "false"}`
     );
 
     return res;
@@ -72,7 +79,10 @@ export default async function Home() {
         randomNewsLimit1={randomNewsLimit1}
         randomNewsLimit2={randomNewsLimit2}
       />
-      <LatestNewsSection latestNews={allNews} />
+      <LatestNewsSection
+        latestNews={allNews}
+        newsByCategory={getNewsByCategory}
+      />
       <FeaturedCategoryNewsSection newsByCategory={filteredCategories} />
       <CategoryNewsSection newsByCategory={filteredCategories} />
     </div>

@@ -22,7 +22,7 @@ export default async function CategoryPage({ params, searchParams }: Params) {
   const { id } = await searchParams;
 
   const getAllNewsByCategory = await getData(
-    `${getInternalBaseUrl()}/api/berita/category?category=${id}`
+    `${getInternalBaseUrl()}/api/berita/category?category_id=${id}`
   );
 
   const getNews = getAllNewsByCategory.data.data;

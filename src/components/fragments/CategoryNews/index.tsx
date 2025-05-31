@@ -5,6 +5,7 @@ import TruncateText from "@/utils/helper/TruncateText";
 import SmallAds from "@/components/core/SmallAds";
 import { FileType } from "@/utils/helper/TypeHelper";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
+import { formatedDate } from "@/utils/helper/FormatedDate";
 
 interface Props {
   newsByCategory: any;
@@ -57,6 +58,10 @@ export default function CategoryNewsSection({ newsByCategory }: Props) {
                             {data.title}
                           </h3>
                         </Link>
+                        <div className=" text-xs text-black/80">
+                          {data.created_by.username} |{" "}
+                          {formatedDate(data.created_at)}
+                        </div>
                       </div>
                       <div className="border-t text-sm lg:text-md border-gray-300">
                         <p>
