@@ -19,7 +19,6 @@ import { useRouter, usePathname, useSearchParams } from "next/navigation";
 import { useMediaQuery } from "@/utils/hooks/use-media-query";
 import { getData } from "@/services";
 import type { CategoryType } from "@/utils/helper/TypeHelper";
-import { getInternalBaseUrl } from "@/utils/helper/Internal";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -71,6 +70,8 @@ export default function Navbar() {
   const openLoginModal = () => {
     router.push("/masuk");
   };
+
+  console.log("INI ADALAH LOG SEARCH PARAM: ", searchResults);
 
   useEffect(() => {
     async function fetchCategories() {
