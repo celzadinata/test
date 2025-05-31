@@ -1,7 +1,7 @@
 import SmallAds from "@/components/core/SmallAds";
 import WidthAds from "@/components/core/WidthAds";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
-import { formatedDate, timeAgo } from "@/utils/helper/FormatedDate";
+import { timeAgo } from "@/utils/helper/FormatedDate";
 import truncateText from "@/utils/helper/TruncateText";
 import { FileType } from "@/utils/helper/TypeHelper";
 import Image from "next/image";
