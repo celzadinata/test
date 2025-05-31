@@ -1,5 +1,7 @@
 import { registerUser } from "@/utils/backend/auth";
+
 import { decodeJwt } from "@/utils/helper/decodeJwt";
+
 import { NextRequest, NextResponse } from "next/server";
 
 export async function POST(req: NextRequest) {

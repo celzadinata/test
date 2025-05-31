@@ -9,6 +9,7 @@ import parse from "html-react-parser";
 import { HashtagType } from "@/utils/helper/TypeHelper";
 import SmallAds from "@/components/core/SmallAds";
 import { getInternalBaseUrl } from "@/utils/helper/Internal";
+import { formatedDate } from "@/utils/helper/FormatedDate";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -34,9 +35,13 @@ export default async function DetailPage({ params }: Props) {
               <span className="text-sm font-semibold text-red-600">
                 {newsDetail.data.category_id.category_name}
               </span>
-              <h1 className="text-2xl md:text-3xl font-bold mt-1">
+              <h1 className="mb-1 text-2xl md:text-3xl font-bold mt-1">
                 {newsDetail.data.title}
               </h1>
+              <span className="text-sm">
+                {newsDetail.data.created_by.username} |{" "}
+                {formatedDate(newsDetail.data.created_at)}
+              </span>
               <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
                 <span>warungjurnalis.com</span>
                 <div className="flex items-center gap-2">

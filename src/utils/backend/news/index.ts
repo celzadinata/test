@@ -9,6 +9,26 @@ export const getAllNews = async (): Promise<ResponseType> => {
   return response;
 };
 
+export const getNewsById = async (id: string): Promise<ResponseType> => {
+  const res = await fetch(`${baseURL}/api/news/${id}`);
+  const response = await res.json();
+
+  return response;
+};
+
+export const getNewsByTitle = async (
+  title: string,
+  page?: string,
+  limit?: string
+): Promise<ResponseType> => {
+  const res = await fetch(
+    `${baseURL}/api/news?title=${title}&page=${page}&limit=${limit}`
+  );
+  const response = await res.json();
+
+  return response;
+};
+
 export const getAllRandomNews = async (
   limit: number
 ): Promise<ResponseType> => {
@@ -18,26 +38,14 @@ export const getAllRandomNews = async (
   return response;
 };
 
-export const getNewsNew = async () => {
-  const res = await fetch(`${baseURL}/api/news`, {
-    cache: "no-store",
-  });
-  const data = await res.json();
-  return data;
-};
-
-export const getNewsById = async (id: string): Promise<ResponseType> => {
-  const res = await fetch(`${baseURL}/api/news/${id}`);
-  const response = await res.json();
-
-  return response;
-};
-
 export const getNewsByCategory = async (
-  categoryId: string
+  categoryId: string,
+  page?: string,
+  limit?: string,
+  random?: string
 ): Promise<ResponseType> => {
   const res = await fetch(
-    `${baseURL}/api/news?category_id=${categoryId}&sort=asc`
+    `${baseURL}/api/news?category_id=${categoryId}&sort=asc&page=${page}&limit=${limit}&random=${random}`
   );
   const response = await res.json();
 

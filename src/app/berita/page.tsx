@@ -26,6 +26,10 @@ const bokorFont = Bokor({
   weight: "400",
 });
 
+// type Params = {
+//   searchParams: Promise<{ title?: string }>;
+// };
+
 export default function NewsPage() {
   const [currentPage, setCurrentPage] = useState(1);
 
