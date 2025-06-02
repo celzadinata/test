@@ -10,6 +10,9 @@ import { HashtagType } from "@/utils/helper/TypeHelper";
 import SmallAds from "@/components/core/SmallAds";
 import { getInternalBaseUrl } from "@/utils/helper/Internal";
 import { formatedDate } from "@/utils/helper/FormatedDate";
+import truncateText from "@/utils/helper/TruncateText";
+import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
+import Link from "next/link";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -24,6 +27,8 @@ export default async function DetailPage({ params }: Props) {
   const randomNews: any = await getData(
     `${getInternalBaseUrl()}/api/berita/random?limit=6`
   );
+
+  const allNews: any = await getData(`${getInternalBaseUrl()}/api/berita`);
 
   return (
     <div className="min-h-screen">
@@ -62,9 +67,22 @@ export default async function DetailPage({ params }: Props) {
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 lg:border-r lg:pe-6 lg:border-gray-300">
-            <div className="prose max-w-none mb-8">
+            <div className="prose max-w-none mb-2">
               {parse(newsDetail.data.body)}
               <br />
+
+              {newsDetail.data.youtube_url ? (
+                <div className="flex justify-center w-full mb-5">
+                  <iframe
+                    className="aspect-video w-80 md:w-[500px] lg:w-[600px]"
+                    src={`https://www.youtube.com/embed/${new URL(
+                      newsDetail.data.youtube_url
+                    ).searchParams.get("v")}`}
+                  ></iframe>
+                </div>
+              ) : (
+                <></>
+              )}
 
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-8">
@@ -85,52 +103,30 @@ export default async function DetailPage({ params }: Props) {
 
             {/* Related Articles */}
             <div className="mb-8">
-              <h3 className="font-bold mb-4">Berita Terkait</h3>
+              <h3 className="font-bold mb-4">Berita Terkini</h3>
               <div className="space-y-4">
-                <div className="flex gap-3">
-                  <div className="flex-none">
-                    <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                      <span>1</span>
+                {allNews.data.data
+                  .slice(0, 3)
+                  .map((data: any, index: number) => (
+                    <div key={index}>
+                      <div className="flex gap-3">
+                        <div className="flex-none">
+                          <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
+                            <span>{index + 1}</span>
+                          </div>
+                        </div>
+                        <Link href={`/berita/${data.id}/${data.slug}`}>
+                          <p className="text-sm hover:font-bold">
+                            {truncateText(
+                              extractPlainTextFromHTML(data.body),
+                              100
+                            )}
+                          </p>
+                        </Link>
+                      </div>
+                      <Separator />
                     </div>
-                  </div>
-                  <div>
-                    <p className="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                  </div>
-                </div>
-                <Separator />
-                <div className="flex gap-3">
-                  <div className="flex-none">
-                    <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                      <span>2</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                  </div>
-                </div>
-                <Separator />
-                <div className="flex gap-3">
-                  <div className="flex-none">
-                    <div className="bg-orange-500 text-white rounded-full w-6 h-6 flex items-center justify-center">
-                      <span>3</span>
-                    </div>
-                  </div>
-                  <div>
-                    <p className="text-sm">
-                      Lorem ipsum dolor sit amet, consectetur adipiscing elit,
-                      sed do eiusmod tempor incididunt ut labore et dolore magna
-                      aliqua.
-                    </p>
-                  </div>
-                </div>
+                  ))}
               </div>
             </div>
 

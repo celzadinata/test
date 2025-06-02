@@ -16,11 +16,17 @@ export default function SmallAds() {
   return (
     <div className="mb-8 w-full bg-gray-100 p-4 rounded-md">
       <p className="text-xs text-gray-500 mb-2">Advertisement</p>
-      <AdBannerComponent
-        dataAdFormat="auto"
-        dataFullWidthResponsive={true}
-        dataAdSlot="5748426756"
-      />
+      <div className="flex justify-center items-center bg-gray-50 rounded-md h-80">
+        {AdBannerComponent ? (
+          <AdBannerComponent
+            dataAdFormat="auto"
+            dataFullWidthResponsive={true}
+            dataAdSlot="5748426756"
+          />
+        ) : (
+          <p className="text-gray-500">No Ad</p>
+        )}
+      </div>
     </div>
   );
 }
