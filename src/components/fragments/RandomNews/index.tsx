@@ -29,7 +29,7 @@ export default async function RandomNewsSection({
               item.banner.map((file: FileType, index: number) => (
                 <div
                   key={index}
-                  className="relative w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-lg"
+                  className="relative px-6 md:px-0 w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-lg"
                 >
                   <Link href={`/berita/${item.id}/${item.slug}`}>
                     <div className="relative w-full h-[250px] md:h-[400px] md:w-[600px] rounded-lg overflow-hidden">

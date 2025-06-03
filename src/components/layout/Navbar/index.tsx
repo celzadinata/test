@@ -5,7 +5,7 @@ import Link from "next/link";
 import Image from "next/image";
 import Logo from "../../../../public/assets/cam-logo.svg";
 import LogoDark from "../../../../public/assets/cam-logo-dark.svg";
-import { Search, X, TextSearch, LogIn } from "lucide-react";
+import { Search, X, TextSearch, LogIn, LogOut } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import {
@@ -20,6 +20,17 @@ import { useMediaQuery } from "@/utils/hooks/use-media-query";
 import { getData } from "@/services";
 import type { CategoryType } from "@/utils/helper/TypeHelper";
 import { DialogTitle } from "@radix-ui/react-dialog";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
@@ -42,9 +53,10 @@ export default function Navbar() {
   const [searchResults, setSearchResults] = useState<any>(null);
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [searchError, setSearchError] = useState<string | null>(null);
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [isLogoutModalOpen, setIsLogoutModalOpen] = useState<boolean>(false); // State untuk modal logout
   const isMobile = useMediaQuery("(max-width: 767px)");
   const pathname = usePathname();
-
   const router = useRouter();
   const searchParams = useSearchParams();
   const inputRef = useRef<HTMLInputElement>(null);
@@ -114,6 +126,53 @@ export default function Navbar() {
   const openLoginModal = () => {
     router.push("/masuk");
   };
+
+  const handleLogout = async () => {
+    try {
+      // Panggil API logout untuk menghapus cookie atau token di server
+      const res = await fetch("/api/auth/keluar", {
+        method: "POST",
+        credentials: "include",
+      });
+      if (res.ok) {
+        setIsAuthenticated(false);
+        setIsLogoutModalOpen(false); // Tutup modal setelah logout
+        router.push("/"); // Arahkan ke halaman utama setelah logout
+      } else {
+        console.error("Gagal logout:", await res.json());
+      }
+    } catch (err) {
+      console.error("Error saat logout:", err);
+    }
+  };
+
+  const checkAuth = async () => {
+    setIsLoading(true);
+    try {
+      const res = await fetch("/api/auth/check", {
+        method: "GET",
+        credentials: "include", // Mengirim cookies
+      });
+      const response = await res.json();
+      console.log("Respons penuh: ", response);
+      if (response.status === 200 && response.data) {
+        setIsAuthenticated(response.data.isAuthenticated);
+        console.log("Data pengguna: ", response.data);
+      } else {
+        setIsAuthenticated(false);
+        console.log("Autentikasi gagal: ", response.message);
+      }
+    } catch (err) {
+      console.error("Gagal memeriksa autentikasi:", err);
+      setIsAuthenticated(false);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    checkAuth();
+  }, []);
 
   useEffect(() => {
     async function fetchCategories() {
@@ -289,15 +348,53 @@ export default function Navbar() {
 
         {/* Auth buttons - only visible on desktop */}
         <div className="hidden md:flex items-center gap-2">
-          <Button
-            onClick={openLoginModal}
-            variant="ghost"
-            size="sm"
-            className="text-white border-1 hover:bg-white cursor-pointer hover:text-black text-sm h-8 px-3"
-          >
-            <LogIn />
-            Masuk
-          </Button>
+          {isLoading ? (
+            <p className="text-white text-sm">Memuat...</p>
+          ) : isAuthenticated ? (
+            <AlertDialog
+              open={isLogoutModalOpen}
+              onOpenChange={setIsLogoutModalOpen}
+            >
+              <AlertDialogTrigger asChild>
+                <Button
+                  variant="ghost"
+                  size="sm"
+                  className="text-white border-1 hover:bg-white cursor-pointer hover:text-red-500 text-sm h-8 px-3"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Keluar
+                </Button>
+              </AlertDialogTrigger>
+              <AlertDialogContent>
+                <AlertDialogHeader>
+                  <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
+                  <AlertDialogDescription>
+                    Apakah Anda yakin ingin keluar dari akun ini? Anda perlu
+                    login kembali untuk mengakses aplikasi.
+                  </AlertDialogDescription>
+                </AlertDialogHeader>
+                <AlertDialogFooter>
+                  <AlertDialogCancel>Batal</AlertDialogCancel>
+                  <AlertDialogAction
+                    onClick={handleLogout}
+                    className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                  >
+                    Ya, Keluar
+                  </AlertDialogAction>
+                </AlertDialogFooter>
+              </AlertDialogContent>
+            </AlertDialog>
+          ) : (
+            <Button
+              onClick={openLoginModal}
+              variant="ghost"
+              size="sm"
+              className="text-white border-1 hover:bg-white cursor-pointer hover:text-black text-sm h-8 px-3"
+            >
+              <LogIn className="h-4 w-4 mr-2" />
+              Masuk
+            </Button>
+          )}
         </div>
 
         {/* Hamburger menu - only visible on mobile */}
@@ -315,8 +412,7 @@ export default function Navbar() {
             side="right"
             className="w-[280px] sm:w-[320px] px-5 overflow-y-auto"
           >
-            <DialogTitle className="sr-only">Cari Berita</DialogTitle>{" "}
-            {/* Judul tersembunyi untuk aksesibilitas */}
+            <DialogTitle className="sr-only">Cari Berita</DialogTitle>
             <div className="flex justify-center mb-6 mt-4">
               <div className="relative w-10 h-10">
                 <Image
@@ -440,16 +536,50 @@ export default function Navbar() {
             </nav>
             {/* Auth buttons in mobile menu */}
             <div className="flex flex-col gap-3 mt-4">
-              <SheetClose asChild>
-                <Button
-                  onClick={openLoginModal}
-                  variant="outline"
-                  className="w-full"
+              {isLoading ? (
+                <p className="text-sm text-gray-500">Memuat...</p>
+              ) : isAuthenticated ? (
+                <AlertDialog
+                  open={isLogoutModalOpen}
+                  onOpenChange={setIsLogoutModalOpen}
                 >
-                  <LogIn />
-                  Masuk
-                </Button>
-              </SheetClose>
+                  <AlertDialogTrigger asChild>
+                    <Button variant="destructive" className="w-full">
+                      <LogOut className="h-4 w-4 mr-1" />
+                      Keluar
+                    </Button>
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Konfirmasi Keluar</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        Apakah Anda yakin ingin keluar dari akun ini? Anda perlu
+                        login kembali untuk mengakses aplikasi.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Batal</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={handleLogout}
+                        className="bg-red-600 hover:bg-red-700 focus:ring-red-600"
+                      >
+                        Ya, Keluar
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
+              ) : (
+                <SheetClose asChild>
+                  <Button
+                    onClick={openLoginModal}
+                    variant="outline"
+                    className="w-full bg-blue-500 text-white hover:bg-blue-300"
+                  >
+                    <LogIn className="h-4 w-4 mr-2" />
+                    Masuk
+                  </Button>
+                </SheetClose>
+              )}
             </div>
           </SheetContent>
         </Sheet>

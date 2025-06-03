@@ -7,7 +7,7 @@ export const getData = async (url: string) => {
         // revalidate: 30,
       },
     });
-    if (!res.ok) {
+    if (res.status !== 200) {
       throw new Error(`Failed to fetch data: ${res.status} ${res.statusText}`);
     }
     const data = await res.json();

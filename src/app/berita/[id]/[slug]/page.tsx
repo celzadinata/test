@@ -132,7 +132,10 @@ export default async function DetailPage({ params }: Props) {
 
             {/* Advertisement */}
             <SmallAds />
-            <CommentSection />
+            <CommentSection
+              comments={newsDetail.data.comments}
+              newsId={newsDetail.data.id}
+            />
           </div>
         </div>
       </div>
