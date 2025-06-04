@@ -83,7 +83,7 @@ export default async function Home() {
         latestNews={allNews}
         newsByCategory={getNewsByCategory}
       />
-      <FeaturedCategoryNewsSection newsByCategory={filteredCategories} />
+      <FeaturedCategoryNewsSection allCategories={allCategories} />
       <CategoryNewsSection newsByCategory={filteredCategories} />
     </div>
   );

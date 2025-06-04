@@ -1,5 +1,6 @@
 import SmallAds from "@/components/core/SmallAds";
 import WidthAds from "@/components/core/WidthAds";
+import imagePlaceholder from "../../../../public/assets/placeholder-image.jpg";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import { timeAgo } from "@/utils/helper/FormatedDate";
 import truncateText from "@/utils/helper/TruncateText";
@@ -22,8 +23,6 @@ export default async function LatestNewsSection({
   newsByCategory,
 }: Props) {
   const latestNewsList = (latestNews.data as any).data;
-
-  console.log("INI LATEST NEWS: ", latestNewsList);
 
   const filteredNews = await Promise.all(
     latestNewsList.slice(1, 2).map(async (item: any) => {
@@ -57,41 +56,58 @@ export default async function LatestNewsSection({
                           {item.title}
                         </h1>
                       </Link>
-                      <div className="mb-4 mt-1 text-xs text-black/80">
-                        {item.created_by.username} | {timeAgo(item.created_at)}
+                      <div className="mb-4 mt-1 text-sm text-black/80">
+                        {timeAgo(item.created_at)}
                       </div>
-                      <div className="space-y-3 mb-4">
-                        <p className="text-sm">
+                      <div className="space-y-2 mb-4">
+                        <p className="text-md">
                           {truncateText(
                             extractPlainTextFromHTML(item.body),
                             200
                           )}
                         </p>
+                        <div className="text-sm mb-2 text-muted-foreground">
+                          Oleh: {item.created_by.username}
+                        </div>
                         <Link href={`/berita/${item.id}/${item.slug}`}>
                           <div className="text-md font-bold cursor-pointer hover:text-gray-500">
-                            Baca selengkapnya {">"}
+                            Baca selengkapnya &gt;
                           </div>
                         </Link>
                       </div>
                     </div>
-                    {item.files.slice(0, 1).map(
-                      (file: FileType, fileIndex: number) =>
-                        file.description === "HEADLINE" && (
-                          <Link
-                            key={fileIndex}
-                            href={`/berita/${item.id}/${item.slug}`}
-                          >
-                            <div className="relative rounded-md w-full h-[250px] md:w-[500px] md:h-[300px] overflow-hidden bg-cover cursor-pointer bg-no-repeat">
-                              <Image
-                                src={file.url}
-                                alt={item.slug}
-                                width={500}
-                                height={300}
-                                className="w-full rounded-md transition duration-300 ease-in-out group-hover:scale-110"
-                              />
-                            </div>
+                    {item.banner.length > 0 ? (
+                      item.banner.map((file: FileType, fileIndex: number) => (
+                        <div
+                          key={fileIndex}
+                          className="relative rounded-lg w-full h-[250px] md:w-[500px] md:h-[300px] overflow-hidden bg-cover cursor-pointer bg-no-repeat"
+                        >
+                          <Link href={`/berita/${item.id}/${item.slug}`}>
+                            <Image
+                              src={file.url}
+                              alt={item.slug}
+                              width={500}
+                              height={300}
+                              className="object-cover w-full h-full rounded-lg transition duration-300 ease-in-out group-hover:scale-110"
+                            />
                           </Link>
-                        )
+                        </div>
+                      ))
+                    ) : (
+                      <Link
+                        key={item.id}
+                        href={`/berita/${item.id}/${item.slug}`}
+                      >
+                        <div className="relative rounded-lg w-full h-[250px] md:w-[500px] md:h-[300px] overflow-hidden bg-cover cursor-pointer bg-no-repeat">
+                          <Image
+                            src={imagePlaceholder}
+                            alt={item.slug}
+                            width={500}
+                            height={300}
+                            className="object-cover w-full h-full rounded-lg transition duration-300 ease-in-out group-hover:scale-110"
+                          />
+                        </div>
+                      </Link>
                     )}
                   </div>
                 ))}
@@ -111,51 +127,69 @@ export default async function LatestNewsSection({
                           {item.title}
                         </h2>
                       </Link>
-                      <div className="mb-4 mt-1 text-xs text-black/80">
-                        {item.created_by.username} | {timeAgo(item.created_at)}
+                      <div className="mb-4 mt-1 text-sm text-black/80">
+                        {timeAgo(item.created_at)}
                       </div>
-                      <p className="text-sm mb-1">
+                      <p className="text-md mb-2">
                         {truncateText(extractPlainTextFromHTML(item.body), 200)}
                       </p>
+                      <div className="text-sm text-muted-foreground">
+                        Oleh: {item.created_by.username}
+                      </div>
                       <div className="mt-4">
                         {filteredNews
                           .slice(0, 1)
                           .map((item: any, index: number) => (
                             <div key={index}>
-                              {item.news.data.map(
-                                (data: any, index: number) => (
+                              {item.news.data
+                                .slice(1, 2)
+                                .map((data: any, index: number) => (
                                   <Link
                                     key={index}
                                     href={`/${item.category_name}?id=${item.category_id}`}
                                   >
                                     <div className="text-red-600 text-md font-bold cursor-pointer hover:text-red-400">
-                                      Berita terkait {">"}
+                                      Berita terkait &gt;
                                     </div>
-                                    <p className="text-sm">{data.title}</p>
+                                    <p className="text-sm">
+                                      {data.title || "Tidak ada berita"}
+                                    </p>
                                   </Link>
-                                )
-                              )}
+                                ))}
                             </div>
                           ))}
                       </div>
                     </div>
-                    {item.files.slice(0, 1).map(
-                      (file: FileType, index: number) =>
-                        file.description === "HEADLINE" && (
-                          <Link
-                            href={`/berita/${item.id}/${item.slug}`}
-                            key={index}
-                            className="relative w-full h-[250px] md:w-[500px] md:h-[300px] rounded-md overflow-hidden cursor-pointer bg-cover bg-no-repeat"
-                          >
-                            <Image
-                              src={file.url}
-                              alt={item.slug}
-                              width={500}
-                              height={300}
-                              className="w-full rounded-md transition duration-300 ease-in-out group-hover:scale-110"
-                            />
-                          </Link>
-                        )
+                    {item.banner.length > 0 ? (
+                      item.banner.map((file: FileType, index: number) => (
+                        <Link
+                          href={`/berita/${item.id}/${item.slug}`}
+                          key={index}
+                          className="relative w-full h-[250px] md:w-[500px] md:h-[300px] rounded-lg overflow-hidden cursor-pointer bg-cover bg-no-repeat"
+                        >
+                          <Image
+                            src={file.url}
+                            alt={item.slug}
+                            width={500}
+                            height={300}
+                            className="object-cover w-full h-full rounded-lg transition duration-300 ease-in-out group-hover:scale-110"
+                          />
+                        </Link>
+                      ))
+                    ) : (
+                      <Link
+                        href={`/berita/${item.id}/${item.slug}`}
+                        key={index}
+                        className="relative w-full h-[250px] md:w-[500px] md:h-[300px] rounded-lg overflow-hidden cursor-pointer bg-cover bg-no-repeat"
+                      >
+                        <Image
+                          src={imagePlaceholder}
+                          alt={item.slug}
+                          width={500}
+                          height={300}
+                          className="w-full rounded-lg transition duration-300 ease-in-out group-hover:scale-110"
+                        />
+                      </Link>
                     )}
                   </div>
                 ))}
@@ -165,7 +199,7 @@ export default async function LatestNewsSection({
           {/* Sidebar - 1 column */}
           <div className="lg:col-span-1 border-t border-b border-black">
             <div className="py-4 border-b border-gray-300">
-              <h3 className="text-lg font-bold">The Latest</h3>
+              <h3 className="text-xl font-black">Berita Terkini</h3>
               <hr className="mb-3 " />
 
               <div className="space-y-4">

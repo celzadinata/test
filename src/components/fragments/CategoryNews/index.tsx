@@ -6,6 +6,7 @@ import SmallAds from "@/components/core/SmallAds";
 import { FileType } from "@/utils/helper/TypeHelper";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import { formatedDate } from "@/utils/helper/FormatedDate";
+import ImgPlaceholder from "../../../../public/assets/placeholder-image.jpg";
 
 interface Props {
   newsByCategory: any;
@@ -34,32 +35,47 @@ export default function CategoryNewsSection({ newsByCategory }: Props) {
                     <div key={index} className="grid grid-cols-2 gap-4">
                       {/* Featured News */}
                       <div className="mb-6">
-                        {data.files.slice(0, 1).map(
-                          (file: FileType, index: number) =>
-                            file.description === "HEADLINE" && (
+                        {data.banner.length > 0 ? (
+                          data.banner
+                            .slice(0, 1)
+                            .map((file: FileType, index: number) => (
                               <Link
                                 key={index}
                                 href={`/berita/${data.id}/${data.slug}`}
                               >
-                                <div className="relative rounded-md overflow-hidden group bg-cover bg-no-repeat">
+                                <div className="relative rounded-lg md:w-30 lg:h-50 lg:w-60 xl:h-55 xl:w-85 overflow-hidden group bg-cover bg-no-repeat">
                                   <Image
-                                    src={file.url}
+                                    src={file.url || ImgPlaceholder}
                                     alt={data.slug}
                                     width={500}
                                     height={300}
-                                    className="w-full h-50 rounded-md object-cover mb-2 transition duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
+                                    className="w-full h-full rounded-lg object-cover mb-2 transition duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
                                   />
                                 </div>
                               </Link>
-                            )
+                            ))
+                        ) : (
+                          <Link
+                            key={index}
+                            href={`/berita/${data.id}/${data.slug}`}
+                          >
+                            <div className="relative rounded-lg md:w-30 lg:h-50 lg:w-60 xl:h-55 xl:w-85 overflow-hidden group bg-cover bg-no-repeat">
+                              <Image
+                                src={ImgPlaceholder}
+                                alt={data.slug}
+                                width={500}
+                                height={300}
+                                className="w-full h-full rounded-lg object-cover mb-2 transition duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
+                              />
+                            </div>
+                          </Link>
                         )}
                         <Link href={`/berita/${data.id}/${data.slug}`}>
-                          <h3 className="text-md lg:text-xl font-bold group-hover:text-gray-500">
+                          <h3 className="text-md mt-3 lg:text-xl font-bold group-hover:text-gray-500">
                             {data.title}
                           </h3>
                         </Link>
                         <div className=" text-xs text-black/80">
-                          {data.created_by.username} |{" "}
                           {formatedDate(data.created_at)}
                         </div>
                       </div>
@@ -70,6 +86,9 @@ export default function CategoryNewsSection({ newsByCategory }: Props) {
                             200
                           )}
                         </p>
+                        <div className="text-sm mt-1 text-muted-foreground">
+                          Oleh: {data.created_by.username}
+                        </div>
                       </div>
                     </div>
                   ))}

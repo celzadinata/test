@@ -8,22 +8,35 @@ import { MouseEventHandler, ReactNode, useRef } from "react";
 interface Props {
   children: ReactNode;
   disableClose?: boolean;
+  onClose?: () => void;
 }
 
-export default function Modal({ children, disableClose = false }: Props) {
-  const overlay = useRef(null);
+export default function Modal({
+  children,
+  disableClose = false,
+  onClose,
+}: Props) {
+  const overlay = useRef<HTMLDivElement>(null); // Type the ref for better clarity
   const router = useRouter();
   const pathname = usePathname();
 
-  const handleCloseOverlay: MouseEventHandler = (e) => {
+  const handleCloseOverlay: MouseEventHandler<HTMLDivElement> = (e) => {
     if (e.target === overlay.current && !disableClose) {
-      router.back();
+      if (onClose) {
+        onClose(); // Call custom onClose if provided
+      } else {
+        router.back(); // Fallback to router.back
+      }
     }
   };
 
   const handleCloseButton = () => {
     if (!disableClose) {
-      router.back();
+      if (onClose) {
+        onClose(); // Call custom onClose if provided
+      } else {
+        router.back(); // Fallback to router.back
+      }
     }
   };
 
