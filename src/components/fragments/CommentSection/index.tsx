@@ -1,42 +1,91 @@
 "use client";
 
 import { useState, FormEvent } from "react";
+import { useRouter } from "next/navigation";
+import { MessageCircleMore, User } from "lucide-react";
+import { formatedDate } from "@/utils/helper/FormatedDate";
+import { Button } from "@/components/ui/button";
 
-import { MessageCircleMore } from "lucide-react";
+type UserId = {
+  id: string;
+  username: string;
+  email: string;
+};
 
-export default function CommentSection() {
+type Data = {
+  id: string;
+  news_id: string;
+  user_id: UserId;
+  comment: string;
+  created_at: string;
+  updated_at: string;
+};
+
+type Props = {
+  comments: Data[];
+  newsId: string;
+};
+
+export default function CommentSection({ comments, newsId }: Props) {
   const [comment, setComment] = useState<string>("");
-  // const [dropdowns, setDropdowns] = useState<{
-  //   dropdownComment1: boolean;
-  //   dropdownComment2: boolean;
-  //   dropdownComment3: boolean;
-  //   dropdownComment4: boolean;
-  // }>({
-  //   dropdownComment1: false,
-  //   dropdownComment2: false,
-  //   dropdownComment3: false,
-  //   dropdownComment4: false,
-  // });
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [message, setMessage] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [visibleComments, setVisibleComments] = useState(5);
+  const router = useRouter();
 
-  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    console.log("Comment submitted:", comment);
-    setComment("");
+    setIsLoading(true);
+    setMessage(null);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/berita/comment", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          news_id: newsId,
+          comment,
+        }),
+      });
+
+      const data = await response.json();
+
+      if (data.status === 200) {
+        setComment(""); // Reset form setelah sukses
+        router.refresh();
+        setMessage("Komentar berhasil dikirim!");
+      } else {
+        if (data.status === 401) {
+          setError("Anda harus login untuk mengirim komentar.");
+          setTimeout(() => {
+            router.push("/masuk"); // Ganti "/masuk" dengan path halaman login Anda
+          }, 1000);
+        } else {
+          setError(data.message || "Gagal mengirim komentar.");
+        }
+      }
+    } catch (err) {
+      setError("Terjadi kesalahan server. Silakan coba lagi.");
+      console.error("Error submitting comment:", err);
+    } finally {
+      setIsLoading(false);
+    }
   };
 
-  // const toggleDropdown = (dropdownId: keyof typeof dropdowns) => {
-  //   setDropdowns((prev) => ({
-  //     ...prev,
-  //     [dropdownId]: !prev[dropdownId],
-  //   }));
-  // };
+  const handleLoadMore = () => {
+    setVisibleComments(comments.length);
+  };
 
   return (
     <div className="bg-white border-t border-black py-4 lg:py-16 antialiased">
       <div>
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg lg:text-2xl font-bold text-gray-900 dark:text-white">
-            Comments (20)
+            Comments ({comments.length})
           </h2>
         </div>
         <form className="mb-6" onSubmit={handleSubmit}>
@@ -56,45 +105,64 @@ export default function CommentSection() {
               required
             />
           </div>
+          {message && <p className="text-green-600 mb-4">{message}</p>}
+          {error && <p className="text-red-600 mb-4">{error}</p>}
           <button
             type="submit"
-            className="inline-flex items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-blue-800"
+            disabled={isLoading}
+            className="inline-flex cursor-pointer items-center py-2.5 px-4 text-xs font-medium text-center text-white bg-blue-700 rounded-lg focus:ring-4 focus:ring-blue-300 dark:focus:ring-blue-800 hover:bg-blue-800 disabled:bg-gray-400"
           >
-            Post comment
+            {isLoading ? "Mengirim..." : "Post comment"}
           </button>
         </form>
         <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
-          {/* <footer className="flex justify-between items-center mb-2">
-            <div className="flex items-center">
-              <p className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-                <Image
-                  className="mr-2 w-6 h-6 rounded-full"
-                  src={Dummy}
-                  alt="Michael Gough"
-                  width={24}
-                  height={24}
-                />
-                Michael Gough
-              </p>
-              <p className="text-sm text-gray-600 dark:text-gray-400">
-                <time dateTime="2022-02-08" title="February 8th, 2022">
-                  Feb. 8, 2022
-                </time>
-              </p>
+          {comments.length > 0 ? (
+            <>
+              {comments
+                .slice(0, visibleComments)
+                .map((data: Data, index: number) => (
+                  <div key={index} className="border-t-1 border-b-1 py-6 px-2">
+                    <footer className="flex justify-between items-center mb-2">
+                      <div className="flex items-center">
+                        <div className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                          <User className="w-5 h-5 mr-2" />
+                          {data.user_id.username}
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <time
+                            dateTime={data.created_at}
+                            title={formatedDate(data.created_at)}
+                          >
+                            {formatedDate(data.created_at)}
+                          </time>
+                        </p>
+                      </div>
+                    </footer>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {data.comment}
+                    </p>
+                  </div>
+                ))}
+              {visibleComments < comments.length && (
+                <div className="flex justify-center mt-4 rounded-lg">
+                  <Button
+                    variant="secondary"
+                    onClick={handleLoadMore}
+                    className="px-4 py-2 hover:bg-gray-300 text-xs font-medium cursor-pointer transition-colors"
+                  >
+                    Load More
+                  </Button>
+                </div>
+              )}
+            </>
+          ) : (
+            <div className="flex flex-col items-center justify-center">
+              <MessageCircleMore className="w-88 h-88 opacity-40" />
+              <h1 className="text-2xl font-bold opacity-40">
+                Belum ada Komentar
+              </h1>
             </div>
-          </footer>
-          <p className="text-gray-500 dark:text-gray-400">
-            Very straight-to-point article. Really worth time reading. Thank
-            you! But tools are just the instruments for the UX designers. The
-            knowledge of the design tools are as important as the creation of
-            the design strategy.
-          </p> */}
-          <div className="flex flex-col items-center justify-center">
-            <MessageCircleMore className="w-88 h-88 opacity-40" />
-            <h1 className="text-2xl font-bold opacity-40">
-              Belum ada Komentar
-            </h1>
-          </div>
+          )}
         </article>
       </div>
     </div>

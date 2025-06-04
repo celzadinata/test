@@ -1,6 +1,3 @@
-"use client";
-
-import { useState } from "react";
 import {
   Card,
   CardContent,
@@ -9,33 +6,56 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card";
-import {
-  Pagination,
-  PaginationContent,
-  PaginationItem,
-  PaginationLink,
-  PaginationNext,
-  PaginationPrevious,
-} from "@/components/ui/pagination";
+
 import { Button } from "@/components/ui/button";
 import SmallAds from "@/components/core/SmallAds";
 import { Bokor } from "next/font/google";
+import { getData } from "@/services";
+import { getInternalBaseUrl } from "@/utils/helper/Internal";
+import { FileType } from "@/utils/helper/TypeHelper";
+import Image from "next/image";
+import ImgPlaceholder from "../../../public/assets/placeholder-image.jpg";
+import { formatedDate } from "@/utils/helper/FormatedDate";
+import truncateText from "@/utils/helper/TruncateText";
+import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
+import { CustomPagination } from "@/components/layout/CustomPagination";
+import Link from "next/link";
 
 const bokorFont = Bokor({
   subsets: ["latin"],
   weight: "400",
 });
 
-// type Params = {
-//   searchParams: Promise<{ title?: string }>;
-// };
+type Params = {
+  searchParams: Promise<{ search?: string; page?: string }>;
+};
 
-export default function NewsPage() {
-  const [currentPage, setCurrentPage] = useState(1);
+export default async function NewsPage({ searchParams }: Params) {
+  const { search, page = "1" } = await searchParams;
+  const encodedSearch = decodeURIComponent(search || "");
 
-  const handlePageChange = (page: number) => {
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+  const currentPage = Number.parseInt(page, 10) || 1;
+
+  const getNews = await getData(
+    `${getInternalBaseUrl()}/api/berita?title=${encodedSearch}&page=${currentPage}&limit=5`
+  );
+
+  const newsData = getNews.data;
+  const news = newsData.data;
+
+  const paginationData = {
+    current_page: newsData.current_page,
+    first_page_url: newsData.first_page_url,
+    from: newsData.from,
+    last_page: newsData.last_page,
+    last_page_url: newsData.last_page_url,
+    links: newsData.links,
+    next_page_url: newsData.next_page_url,
+    path: newsData.path,
+    per_page: newsData.per_page,
+    prev_page_url: newsData.prev_page_url,
+    to: newsData.to,
+    total: newsData.total,
   };
 
   return (
@@ -50,102 +70,81 @@ export default function NewsPage() {
         {/* Konten Berita - 2/3 lebar pada desktop */}
         <div className="lg:col-span-2">
           {/* Card Berita */}
-          <Card className="mb-6 overflow-hidden">
-            <div className="md:flex">
-              <div className="md:w-1/3">
-                <img
-                  src="/placeholder.svg?height=200&width=300"
-                  alt="Gambar Berita"
-                  className="h-full w-full object-cover"
-                />
-              </div>
-              <div className="md:w-2/3">
-                <CardHeader>
-                  <div className="flex justify-between items-start">
-                    <div>
-                      <CardTitle>Judul Berita Utama</CardTitle>
-                      <CardDescription className="mt-2">
-                        <span className="inline-block bg-primary/10 text-primary px-2 py-1 rounded-md text-xs">
-                          Kategori
-                        </span>
-                      </CardDescription>
+          {news.length > 0 ? (
+            news.map((item: any, index: number) => (
+              <Card key={index} className="mb-6 overflow-hidden">
+                <div className="md:flex">
+                  {item.banner.length > 0 ? (
+                    item.banner.map((file: FileType, index: number) => (
+                      <div key={index} className="md:w-1/3 h-50">
+                        <Image
+                          src={file.url || ImgPlaceholder}
+                          alt={item.slug}
+                          width={500}
+                          height={300}
+                          className="h-full w-full object-cover"
+                        />
+                      </div>
+                    ))
+                  ) : (
+                    <div className="md:w-1/3">
+                      <Image
+                        src={ImgPlaceholder}
+                        alt={item.slug}
+                        className="h-full w-full object-cover"
+                      />
                     </div>
-                    <div className="text-sm text-muted-foreground">
-                      21 Mei 2025
-                    </div>
+                  )}
+                  <div className="md:w-2/3">
+                    <CardHeader>
+                      <div className="flex mt-4 md:mt-0 justify-between items-start">
+                        <div>
+                          <CardTitle>{item.title}</CardTitle>
+                          <CardDescription className="mt-2">
+                            <span className="inline-block bg-red-600/10 text-primary px-2 py-1 rounded-md text-xs">
+                              {item.category_id.category_name}
+                            </span>
+                          </CardDescription>
+                        </div>
+                        <div className="text-sm text-muted-foreground">
+                          {formatedDate(item.created_at)}
+                        </div>
+                      </div>
+                    </CardHeader>
+                    <CardContent>
+                      <p>
+                        {truncateText(extractPlainTextFromHTML(item.body), 200)}
+                      </p>
+                    </CardContent>
+                    <CardFooter className="flex justify-between">
+                      <div className="text-sm text-muted-foreground">
+                        Oleh: {item.created_by.username}
+                      </div>
+                      <Link href={`/berita/${item.id}/${item.slug}`}>
+                        <Button
+                          className="mt-5 cursor-pointer"
+                          variant="outline"
+                          size="sm"
+                        >
+                          Baca Selengkapnya
+                        </Button>
+                      </Link>
+                    </CardFooter>
                   </div>
-                </CardHeader>
-                <CardContent>
-                  <p>
-                    Ini adalah deskripsi singkat tentang berita. Deskripsi ini
-                    memberikan gambaran umum tentang isi berita tanpa
-                    mengungkapkan seluruh detailnya. Pembaca dapat mengklik
-                    tombol &quot;Baca Selengkapnya&quot; untuk melihat berita
-                    lengkap.
-                  </p>
-                </CardContent>
-                <CardFooter className="flex justify-between">
-                  <div className="text-sm text-muted-foreground">
-                    Oleh: Nama Penulis
-                  </div>
-                  <Button variant="outline" size="sm">
-                    Baca Selengkapnya
-                  </Button>
-                </CardFooter>
-              </div>
-            </div>
-          </Card>
+                </div>
+              </Card>
+            ))
+          ) : (
+            <h1>Tidak ada berita</h1>
+          )}
 
           {/* Pagination */}
-          <Pagination>
-            <PaginationContent>
-              <PaginationItem>
-                <PaginationPrevious
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage > 1) handlePageChange(currentPage - 1);
-                  }}
-                  className={
-                    currentPage === 1 ? "pointer-events-none opacity-50" : ""
-                  }
-                />
-              </PaginationItem>
-
-              {[1, 2, 3, 4, 5].map((pageNumber) => (
-                <PaginationItem key={pageNumber}>
-                  <PaginationLink
-                    href="#"
-                    isActive={pageNumber === currentPage}
-                    onClick={(e) => {
-                      e.preventDefault();
-                      handlePageChange(pageNumber);
-                    }}
-                  >
-                    {pageNumber}
-                  </PaginationLink>
-                </PaginationItem>
-              ))}
-
-              <PaginationItem>
-                <PaginationNext
-                  href="#"
-                  onClick={(e) => {
-                    e.preventDefault();
-                    if (currentPage < 5) handlePageChange(currentPage + 1);
-                  }}
-                  className={
-                    currentPage === 5 ? "pointer-events-none opacity-50" : ""
-                  }
-                />
-              </PaginationItem>
-            </PaginationContent>
-          </Pagination>
+          <CustomPagination paginationData={paginationData} />
         </div>
 
         {/* Area Advertisement - 1/3 lebar pada desktop */}
         <div className="lg:col-span-1">
-          <div className="sticky top-4 space-y-6">
+          <div className="sticky top-30 space-y-6">
             <SmallAds />
           </div>
         </div>
