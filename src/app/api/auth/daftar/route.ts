@@ -40,6 +40,7 @@ export async function POST(req: NextRequest) {
 
     return res;
   } catch (err) {
+    console.error("Gagal login: ", err);
     return NextResponse.json(
       { error: `Terjadi kesalahan server: ${err}` },
       { status: 500 }
