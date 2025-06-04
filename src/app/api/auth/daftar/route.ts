@@ -1,6 +1,6 @@
 import { registerUser } from "@/utils/backend/auth";
 
-import { decodeJwt } from "@/utils/helper/decodeJwt";
+import { decodeJwt } from "@/utils/helper/DecodeJwt";
 
 import { NextRequest, NextResponse } from "next/server";
 
