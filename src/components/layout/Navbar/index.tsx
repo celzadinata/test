@@ -154,13 +154,10 @@ export default function Navbar() {
         credentials: "include", // Mengirim cookies
       });
       const response = await res.json();
-      console.log("Respons penuh: ", response);
       if (response.status === 200 && response.data) {
         setIsAuthenticated(response.data.isAuthenticated);
-        console.log("Data pengguna: ", response.data);
       } else {
         setIsAuthenticated(false);
-        console.log("Autentikasi gagal: ", response.message);
       }
     } catch (err) {
       console.error("Gagal memeriksa autentikasi:", err);

@@ -20,7 +20,6 @@ export default function ModalLogout() {
 
   const handleLogout = () => {
     // Implementasi logout di sini
-    console.log("User logged out");
     setIsOpen(false);
     // Redirect ke halaman login atau homepage
     // window.location.href = "/login"

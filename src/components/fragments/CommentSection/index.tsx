@@ -4,11 +4,18 @@ import { useState, FormEvent } from "react";
 import { useRouter } from "next/navigation";
 import { MessageCircleMore, User } from "lucide-react";
 import { formatedDate } from "@/utils/helper/FormatedDate";
+import { Button } from "@/components/ui/button";
+
+type UserId = {
+  id: string;
+  username: string;
+  email: string;
+};
 
 type Data = {
   id: string;
   news_id: string;
-  user_id: string;
+  user_id: UserId;
   comment: string;
   created_at: string;
   updated_at: string;
@@ -24,6 +31,7 @@ export default function CommentSection({ comments, newsId }: Props) {
   const [isLoading, setIsLoading] = useState<boolean>(false);
   const [message, setMessage] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [visibleComments, setVisibleComments] = useState(5);
   const router = useRouter();
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
@@ -46,8 +54,6 @@ export default function CommentSection({ comments, newsId }: Props) {
 
       const data = await response.json();
 
-      console.log("INI DATA COMMENT: ", data);
-
       if (data.status === 200) {
         setComment(""); // Reset form setelah sukses
         router.refresh();
@@ -68,6 +74,10 @@ export default function CommentSection({ comments, newsId }: Props) {
     } finally {
       setIsLoading(false);
     }
+  };
+
+  const handleLoadMore = () => {
+    setVisibleComments(comments.length);
   };
 
   return (
@@ -107,29 +117,44 @@ export default function CommentSection({ comments, newsId }: Props) {
         </form>
         <article className="p-6 text-base bg-white rounded-lg dark:bg-gray-900">
           {comments.length > 0 ? (
-            comments.slice(0, 9).map((data: Data, index: number) => (
-              <div key={index} className="border-t-1 border-b-1 py-6 px-2">
-                <footer className="flex justify-between items-center mb-2">
-                  <div className="flex items-center">
-                    <div className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
-                      <User className="w-5 h-5 mr-2" />
-                      Michael Gough
-                    </div>
-                    <p className="text-sm text-gray-600 dark:text-gray-400">
-                      <time
-                        dateTime={data.created_at}
-                        title={formatedDate(data.created_at)}
-                      >
-                        {formatedDate(data.created_at)}
-                      </time>
+            <>
+              {comments
+                .slice(0, visibleComments)
+                .map((data: Data, index: number) => (
+                  <div key={index} className="border-t-1 border-b-1 py-6 px-2">
+                    <footer className="flex justify-between items-center mb-2">
+                      <div className="flex items-center">
+                        <div className="inline-flex items-center mr-3 text-sm text-gray-900 dark:text-white font-semibold">
+                          <User className="w-5 h-5 mr-2" />
+                          {data.user_id.username}
+                        </div>
+                        <p className="text-sm text-gray-600 dark:text-gray-400">
+                          <time
+                            dateTime={data.created_at}
+                            title={formatedDate(data.created_at)}
+                          >
+                            {formatedDate(data.created_at)}
+                          </time>
+                        </p>
+                      </div>
+                    </footer>
+                    <p className="text-gray-500 dark:text-gray-400">
+                      {data.comment}
                     </p>
                   </div>
-                </footer>
-                <p className="text-gray-500 dark:text-gray-400">
-                  {data.comment}
-                </p>
-              </div>
-            ))
+                ))}
+              {visibleComments < comments.length && (
+                <div className="flex justify-center mt-4 rounded-lg">
+                  <Button
+                    variant="secondary"
+                    onClick={handleLoadMore}
+                    className="px-4 py-2 hover:bg-gray-300 text-xs font-medium cursor-pointer transition-colors"
+                  >
+                    Load More
+                  </Button>
+                </div>
+              )}
+            </>
           ) : (
             <div className="flex flex-col items-center justify-center">
               <MessageCircleMore className="w-88 h-88 opacity-40" />

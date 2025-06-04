@@ -1,6 +1,5 @@
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
-
 import RecommendationNewsSection from "@/components/fragments/RecommendationNewsSection";
 import CommentSection from "@/components/fragments/CommentSection";
 import { getData } from "@/services";
@@ -13,6 +12,7 @@ import { formatedDate } from "@/utils/helper/FormatedDate";
 import truncateText from "@/utils/helper/TruncateText";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import Link from "next/link";
+import ButtonDeck from "@/components/core/ButtonDeck";
 
 type Props = {
   params: Promise<{ id: string }>;
@@ -47,27 +47,14 @@ export default async function DetailPage({ params }: Props) {
                 {newsDetail.data.created_by.username} |{" "}
                 {formatedDate(newsDetail.data.created_at)}
               </span>
-              <div className="flex items-center gap-4 mt-3 text-xs text-gray-500">
-                <span>warungjurnalis.com</span>
-                <div className="flex items-center gap-2">
-                  <button className="hover:text-gray-800">
-                    <Share2 width={16} height={16} />
-                  </button>
-                  <button className="hover:text-gray-800">
-                    <Bookmark width={16} height={16} />
-                  </button>
-                  <button className="hover:text-gray-800">
-                    <Printer width={16} height={16} />
-                  </button>
-                </div>
-              </div>
+              <ButtonDeck />
             </div>
           )}
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 lg:border-r lg:pe-6 lg:border-gray-300">
-            <div className="prose max-w-none mb-2">
+            <article className="prose max-w-none mb-2">
               {parse(newsDetail.data.body)}
               <br />
 
@@ -83,7 +70,10 @@ export default async function DetailPage({ params }: Props) {
               ) : (
                 <></>
               )}
+            </article>
 
+            {/* Everything below this point will be hidden during printing */}
+            <div className="print:hidden">
               {/* Tags */}
               <div className="flex flex-wrap gap-2 mb-8">
                 {newsDetail.data.tags.map((tag: HashtagType, index: number) => (
@@ -92,12 +82,12 @@ export default async function DetailPage({ params }: Props) {
                   </Badge>
                 ))}
               </div>
-            </div>
 
-            <RecommendationNewsSection randomNews={randomNews} />
+              <RecommendationNewsSection randomNews={randomNews} />
+            </div>
           </div>
 
-          <div className="lg:col-span-1">
+          <div className="lg:col-span-1 print:hidden">
             {/* Advertisement */}
             <SmallAds />
 
