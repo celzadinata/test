@@ -25,24 +25,61 @@ export default async function RandomNewsSection({
       <div className="mb-6 lg:mb-0">
         {newsList1 &&
           newsList1.map((item: any) =>
-            item.files.slice(0, 1).map((file: any, index: number) => (
+            item.banner.length > 0 ? (
+              item.banner.map((file: FileType, index: number) => (
+                <div
+                  key={index}
+                  className="relative px-6 md:px-0 w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-lg"
+                >
+                  <Link href={`/berita/${item.id}/${item.slug}`}>
+                    <div className="relative w-full h-[250px] md:h-[400px] md:w-[600px] rounded-lg overflow-hidden">
+                      <Image
+                        src={file.url || imagePlaceholder}
+                        alt={item.slug}
+                        width={800}
+                        height={600}
+                        className="object-cover w-full h-full rounded-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none z-[1]" />
+                      <div className="absolute bottom-0 left-0 p-3 text-white transition-transform duration-300 ease-in-out group-hover:scale-95 z-[2]">
+                        <div className="mb-1 flex items-center text-xs font-medium text-white/90">
+                          <span>{item.created_by.username}</span>
+                          <span className="mx-1">|</span>
+                          <span>
+                            {formatedDate(item.created_at) || "xxxx, xx-xx"}
+                          </span>
+                        </div>
+                        <h3 className="font-bold leading-tight">
+                          {item.title || "News Title"}
+                        </h3>
+                        <div className="mt-1 text-xs text-white/70">
+                          {timeAgo(item.created_at) || "xxxx, xx-xx"}
+                        </div>
+                      </div>
+                    </div>
+                  </Link>
+                </div>
+              ))
+            ) : (
               <div
-                key={index}
-                className="relative w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-md"
+                key={item.id}
+                className="relative w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-lg"
               >
                 <Link href={`/berita/${item.id}/${item.slug}`}>
-                  <div className="relative w-full h-[250px] md:h-[400px] md:w-[600px] rounded-md overflow-hidden">
+                  <div className="relative w-full h-[250px] md:h-[400px] md:w-[600px] rounded-lg overflow-hidden">
                     <Image
-                      src={file.url || imagePlaceholder}
+                      src={imagePlaceholder}
                       alt={item.slug}
                       width={800}
                       height={600}
-                      className="object-cover w-full h-full rounded-md transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
+                      className="object-cover w-full h-full rounded-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none z-[1]" />
                     <div className="absolute bottom-0 left-0 p-3 text-white transition-transform duration-300 ease-in-out group-hover:scale-95 z-[2]">
                       <div className="mb-1 flex items-center text-xs font-medium text-white/90">
-                        <span>{item.created_by.username}</span>
+                        <span>
+                          {item.created_by.username || "Warung Jurnalis"}
+                        </span>
                         <span className="mx-1">|</span>
                         <span>
                           {formatedDate(item.created_at) || "xxxx, xx-xx"}
@@ -58,7 +95,7 @@ export default async function RandomNewsSection({
                   </div>
                 </Link>
               </div>
-            ))
+            )
           )}
       </div>
       <div className="px-3">
@@ -72,34 +109,43 @@ export default async function RandomNewsSection({
             >
               <div className="flex flex-col justify-between pe-4 leading-normal">
                 <Link href={`/berita/${item.id}/${item.slug}`}>
-                  <h5 className="mb-2 text-lg md:text-xl max-w-lg font-bold tracking-tight text-gray-900 dark:text-white cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
-                    {item.title}
+                  <h5 className="text-lg md:text-xl max-w-lg font-bold tracking-tight text-gray-900 dark:text-white cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
+                    {truncateText(item.title, 100)}
                   </h5>
                 </Link>
-                <p className="mb-3 text-sm font-medium text-gray-800 dark:text-gray-400">
-                  {truncateText(extractPlainTextFromHTML(item.body), 100)}
-                </p>
                 <p className="text-xs text-black/70 mb-2">
                   {timeAgo(item.created_at)}
                 </p>
+                <p className="mb-2 text-sm font-medium text-primary">
+                  {truncateText(extractPlainTextFromHTML(item.body), 100)}
+                </p>
+                <div className="text-xs text-muted-foreground">
+                  Oleh: {item.created_by.username}
+                </div>
               </div>
               <div className="flex justify-end w-50 md:w-[500px] md:h-[120px] md:px-0">
-                {item.files.slice(0, 1).map(
-                  (file: FileType, index: number) =>
-                    file.description === "HEADLINE" && (
-                      <Link
-                        key={index}
-                        href={`/berita/${item.id}/${item.slug}`}
-                      >
-                        <Image
-                          src={file.url || imagePlaceholder}
-                          alt={item.slug}
-                          width={500}
-                          height={300}
-                          className="object-cover rounded-md w-60 h-25 md:w-[500px] md:h-[120px] group-hover:scale-105 cursor-pointer tr ansition-transform duration-300"
-                        />
-                      </Link>
-                    )
+                {item.banner.length > 0 ? (
+                  item.banner.map((file: FileType, index: number) => (
+                    <Link key={index} href={`/berita/${item.id}/${item.slug}`}>
+                      <Image
+                        src={file.url || imagePlaceholder}
+                        alt={item.slug}
+                        width={500}
+                        height={300}
+                        className="object-cover rounded-lg w-60 h-25 md:w-[220px] md:h-[120px] group-hover:scale-105 cursor-pointer tr ansition-transform duration-300"
+                      />
+                    </Link>
+                  ))
+                ) : (
+                  <Link key={index} href={`/berita/${item.id}/${item.slug}`}>
+                    <Image
+                      src={imagePlaceholder}
+                      alt={item.slug}
+                      width={500}
+                      height={300}
+                      className="object-cover rounded-lg w-60 h-25 md:w-[220px] md:h-[120px] group-hover:scale-105 cursor-pointer tr ansition-transform duration-300"
+                    />
+                  </Link>
                 )}
               </div>
             </div>
