@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
 import SmallAds from "@/components/core/SmallAds";
 import { Bokor } from "next/font/google";
 import { getData } from "@/services";
