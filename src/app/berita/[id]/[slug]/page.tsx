@@ -87,7 +87,7 @@ export default async function DetailPage({ params }: Props) {
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          <section className="lg:col-span-2 lg:border-r lg:pe-6 lg:border-gray-300">
+          <section className="lg:col-span-2 garincaesar lg:border-r lg:pe-6 lg:border-gray-300">
             <article className="prose max-w-none mb-2">
               {parse(newsDetail.data.body)}
               <br />
