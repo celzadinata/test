@@ -12,10 +12,10 @@ export async function POST() {
     // Hapus cookie token dengan mengatur expires ke masa lalu
     response.cookies.set("token", "", {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
-      sameSite: "strict",
+      secure: false,
       expires: new Date(0), // Set tanggal kadaluwarsa ke masa lalu
       path: "/",
+      sameSite: "lax",
     });
 
     return response;
