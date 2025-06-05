@@ -18,8 +18,6 @@ export async function POST(req: NextRequest) {
     const token = response.data.token;
     const decoded = decodeJwt(token);
 
-    console.log("INI DECODED: ", decoded);
-
     if (decoded.role === "ADMIN") {
       return NextResponse.json({
         status: 405,

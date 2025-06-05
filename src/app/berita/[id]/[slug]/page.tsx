@@ -64,8 +64,6 @@ export default async function DetailPage({ params }: Props) {
 
   const allNewsData = allNews.data.data.slice(2, 5);
 
-  console.log("INI ALL NEWS: ", allNewsData);
-
   return (
     <main className="min-h-screen">
       <section className="px-4 py-6">
