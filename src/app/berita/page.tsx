@@ -72,8 +72,14 @@ export default async function NewsPage({ searchParams }: Params) {
           {/* Card Berita */}
           {news.length > 0 ? (
             news.map((item: any, index: number) => (
-              <Card key={index} className="mb-6 overflow-hidden">
-                <div className="md:flex">
+              <Card
+                key={index}
+                className="mb-6 hover:bg-gray-100 overflow-hidden"
+              >
+                <Link
+                  href={`/berita/${item.id}/${item.slug}`}
+                  className="md:flex cursor-pointer"
+                >
                   {item.banner.length > 0 ? (
                     item.banner.map((file: FileType, index: number) => (
                       <div key={index} className="md:w-1/3 h-50">
@@ -95,7 +101,8 @@ export default async function NewsPage({ searchParams }: Params) {
                       />
                     </div>
                   )}
-                  <div className="md:w-2/3">
+
+                  <div className="md:w-2/3 cursor-pointer ">
                     <CardHeader>
                       <div className="flex mt-4 md:mt-0 justify-between items-start">
                         <div>
@@ -120,18 +127,16 @@ export default async function NewsPage({ searchParams }: Params) {
                       <div className="text-sm text-muted-foreground">
                         Oleh: {item.created_by.username}
                       </div>
-                      <Link href={`/berita/${item.id}/${item.slug}`}>
-                        <Button
-                          className="mt-5 cursor-pointer"
-                          variant="outline"
-                          size="sm"
-                        >
-                          Baca Selengkapnya
-                        </Button>
-                      </Link>
+                      {/* <Button
+                        className="mt-5 cursor-pointer"
+                        variant="outline"
+                        size="sm"
+                      >
+                        Baca Selengkapnya
+                      </Button> */}
                     </CardFooter>
                   </div>
-                </div>
+                </Link>
               </Card>
             ))
           ) : (
