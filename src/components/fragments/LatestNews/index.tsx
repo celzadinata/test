@@ -2,7 +2,7 @@ import SmallAds from "@/components/core/SmallAds";
 import WidthAds from "@/components/core/WidthAds";
 import imagePlaceholder from "../../../../public/assets/placeholder-image.jpg";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
-import { timeAgo } from "@/utils/helper/FormatedDate";
+import { formatedDate, timeAgo } from "@/utils/helper/FormatedDate";
 import truncateText from "@/utils/helper/TruncateText";
 import type { FileType } from "@/utils/helper/TypeHelper";
 import Image from "next/image";
@@ -213,9 +213,13 @@ export default async function LatestNewsSection({
                       className="pb-4 border-b border-gray-200 last:border-b-0 last:pb-0 hover:bg-gray-50 transition-colors duration-200 rounded-md p-2"
                     >
                       <Link href={`/berita/${item.id}/${item.slug}`}>
-                        <div className="text-sm font-semibold mb-2 hover:text-gray-600 transition-colors duration-200 leading-tight">
+                        <div className="text-sm mb-1 font-semibold hover:text-gray-600 transition-colors duration-200 leading-tight">
                           {item.title}
                         </div>
+                        <p className="text-xs mb-1 text-black/70">
+                          {formatedDate(item.created_at)} |{" "}
+                          {item.created_by.username}
+                        </p>
                         <p className="text-xs text-gray-600 leading-relaxed">
                           {truncateText(
                             extractPlainTextFromHTML(item.body),
