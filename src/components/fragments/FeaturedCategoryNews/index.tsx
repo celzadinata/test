@@ -155,9 +155,13 @@ export default async function FeaturedCategoryNewsSection({
                             className="pb-4 border-b border-gray-200 hover:bg-gray-50 last:border-b-0 last:pb-0 p-2"
                           >
                             <Link href={`/berita/${data.id}/${data.slug}`}>
-                              <h3 className="font-semibold text-sm sm:text-base cursor-pointer hover:text-gray-500 transition-colors duration-200 leading-tight mb-2">
+                              <h3 className="font-semibold text-sm sm:text-base cursor-pointer hover:text-gray-500 transition-colors duration-200 leading-tight mb-1">
                                 {data.title}
                               </h3>
+                              <p className="text-xs mb-1 text-black/70">
+                                {formatedDate(data.created_at)} |{" "}
+                                {data.created_by.username}
+                              </p>
                               <p className="text-xs sm:text-sm text-gray-600 leading-relaxed">
                                 {truncateText(
                                   extractPlainTextFromHTML(data.body),
