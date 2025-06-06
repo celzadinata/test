@@ -105,7 +105,9 @@ export default async function NewsPage({ searchParams }: Params) {
                     <CardHeader>
                       <div className="flex mt-4 md:mt-0 justify-between items-start">
                         <div>
-                          <CardTitle>{item.title}</CardTitle>
+                          <CardTitle className="max-w-55 md:max-w-md">
+                            {item.title}
+                          </CardTitle>
                           <CardDescription className="mt-2">
                             <span className="inline-block bg-red-600/10 text-primary px-2 py-1 rounded-md text-xs">
                               {item.category_id.category_name}
