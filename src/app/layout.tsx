@@ -1,9 +1,8 @@
 import type { Metadata } from "next";
 import { Bokor, Lora } from "next/font/google";
 import "./globals.css";
-import NavbarWrapper from "@/components/layout/NavbarWrapper";
 import AdSense from "@/components/core/Adsense";
-import Footer from "@/components/layout/Footer";
+import LayoutContent from "@/components/layout/LayoutContent";
 
 const bokor = Bokor({
   variable: "--font-bokor",
@@ -26,23 +25,18 @@ const adsenseClientId = process.env.NEXT_PUBLIC_GOOGLE_ADSENSE_CLIENT_ID;
 
 export default function RootLayout({
   children,
-  auth,
 }: Readonly<{
   children: React.ReactNode;
-  auth: React.ReactNode;
 }>) {
   return (
     <html lang="en">
       <head>
         <AdSense pId={adsenseClientId!} />
       </head>
-      <body className={`${lora.variable} ${bokor.variable} antialiased`}>
-        <NavbarWrapper />
-        <div className="container mx-auto">
-          {auth}
-          {children}
-        </div>
-        <Footer />
+      <body
+        className={`${lora.variable} ${bokor.variable} font-[var(--font-lora)] antialiased `}
+      >
+        <LayoutContent>{children}</LayoutContent>
       </body>
     </html>
   );

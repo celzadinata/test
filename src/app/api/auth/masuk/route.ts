@@ -18,6 +18,13 @@ export async function POST(req: NextRequest) {
     const token = response.data.token;
     const decoded = decodeJwt(token);
 
+    if (decoded.role === "ADMIN") {
+      return NextResponse.json({
+        status: 405,
+        message: "Access denied for this account",
+      });
+    }
+
     let maxAge = 60 * 60;
 
     if (decoded?.exp && decoded?.iat) {
@@ -31,10 +38,14 @@ export async function POST(req: NextRequest) {
 
     res.cookies.set("token", token, {
       httpOnly: true,
-      secure: process.env.NODE_ENV === "production",
+      secure: false,
       maxAge,
       path: "/",
+      sameSite: "lax",
     });
+
+    res.headers.set("Access-Control-Allow-Credentials", "true");
+    res.headers.set("Access-Control-Allow-Origin", "http://10.10.103.160:3000");
 
     return res;
   } catch (err) {

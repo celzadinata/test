@@ -7,7 +7,6 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-import { Button } from "@/components/ui/button";
 import SmallAds from "@/components/core/SmallAds";
 import { Bokor } from "next/font/google";
 import { getData } from "@/services";
@@ -72,8 +71,14 @@ export default async function NewsPage({ searchParams }: Params) {
           {/* Card Berita */}
           {news.length > 0 ? (
             news.map((item: any, index: number) => (
-              <Card key={index} className="mb-6 overflow-hidden">
-                <div className="md:flex">
+              <Card
+                key={index}
+                className="mb-6 hover:bg-gray-100 overflow-hidden"
+              >
+                <Link
+                  href={`/berita/${item.id}/${item.slug}`}
+                  className="md:flex cursor-pointer"
+                >
                   {item.banner.length > 0 ? (
                     item.banner.map((file: FileType, index: number) => (
                       <div key={index} className="md:w-1/3 h-50">
@@ -95,11 +100,14 @@ export default async function NewsPage({ searchParams }: Params) {
                       />
                     </div>
                   )}
-                  <div className="md:w-2/3">
+
+                  <div className="md:w-2/3 cursor-pointer ">
                     <CardHeader>
                       <div className="flex mt-4 md:mt-0 justify-between items-start">
                         <div>
-                          <CardTitle>{item.title}</CardTitle>
+                          <CardTitle className="max-w-55 md:max-w-md">
+                            {item.title}
+                          </CardTitle>
                           <CardDescription className="mt-2">
                             <span className="inline-block bg-red-600/10 text-primary px-2 py-1 rounded-md text-xs">
                               {item.category_id.category_name}
@@ -120,18 +128,16 @@ export default async function NewsPage({ searchParams }: Params) {
                       <div className="text-sm text-muted-foreground">
                         Oleh: {item.created_by.username}
                       </div>
-                      <Link href={`/berita/${item.id}/${item.slug}`}>
-                        <Button
-                          className="mt-5 cursor-pointer"
-                          variant="outline"
-                          size="sm"
-                        >
-                          Baca Selengkapnya
-                        </Button>
-                      </Link>
+                      {/* <Button
+                        className="mt-5 cursor-pointer"
+                        variant="outline"
+                        size="sm"
+                      >
+                        Baca Selengkapnya
+                      </Button> */}
                     </CardFooter>
                   </div>
-                </div>
+                </Link>
               </Card>
             ))
           ) : (
