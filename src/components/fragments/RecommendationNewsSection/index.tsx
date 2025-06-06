@@ -5,6 +5,7 @@ import truncateText from "@/utils/helper/TruncateText";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import { FileType } from "@/utils/helper/TypeHelper";
 import ImgPlaceholder from "../../../../public/assets/placeholder-image.jpg";
+import { formatedDate } from "@/utils/helper/FormatedDate";
 
 interface Props {
   randomNews: any;
@@ -47,12 +48,20 @@ export default function RecommendationNewsSection({ randomNews }: Props) {
                   </div>
                 )}
                 <div className="p-5">
-                  <h5 className="mb-2 truncate md:truncate-none text-sm font-bold tracking-tight text-gray-900 dark:text-white">
+                  <h5 className="truncate md:truncate-none text-lg font-bold tracking-tight text-gray-900 dark:text-white">
                     {item.title}
                   </h5>
 
+                  <p className="text-xs mb-2 text-black/70">
+                    {formatedDate(item.created_at)}
+                  </p>
+
                   <p className="mb-3 text-sm font-normal text-gray-700 dark:text-gray-400">
                     {truncateText(extractPlainTextFromHTML(item.body), 90)}
+                  </p>
+
+                  <p className="text-xs text-black/70">
+                    Oleh: {item.created_by.username}
                   </p>
                 </div>
               </div>
