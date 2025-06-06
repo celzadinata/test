@@ -21,21 +21,20 @@ export default function RecommendationNewsSection({ randomNews }: Props) {
           {randomNews.data.data.map((item: any, index: number) => (
             <Link key={index} href={`/berita/${item.id}/${item.slug}`}>
               <div className="max-w-sm h-100 cursor-pointer bg-white hover:bg-gray-100 border border-gray-200 rounded-lg shadow-sm dark:bg-gray-800 dark:border-gray-700">
-                {item.files.length > 0 ? (
-                  item.files.slice(0, 1).map(
-                    (file: FileType, index: number) =>
-                      file.description === "HEADLINE" && (
-                        <div key={index} className="relative w-full h-50">
-                          <Image
-                            className="object-cover rounded-t-lg w-full h-full"
-                            src={file.url || ImgPlaceholder}
-                            alt={item.slug}
-                            width={500}
-                            height={300}
-                          />
-                        </div>
-                      )
-                  )
+                {item.banner.length > 0 ? (
+                  item.banner
+                    .slice(0, 1)
+                    .map((file: FileType, index: number) => (
+                      <div key={index} className="relative w-full h-50">
+                        <Image
+                          className="object-cover rounded-t-lg w-full h-full"
+                          src={file.url || ImgPlaceholder}
+                          alt={item.slug}
+                          width={500}
+                          height={300}
+                        />
+                      </div>
+                    ))
                 ) : (
                   <div key={index} className="relative w-full h-50">
                     <Image
