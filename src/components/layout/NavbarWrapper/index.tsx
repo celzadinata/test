@@ -17,15 +17,16 @@ function NavbarSkeleton() {
         <div className="hidden md:flex items-center">
           <div className="h-8 w-20 bg-gray-700 rounded animate-pulse"></div>
         </div>
+        <div className="md:hidden w-8 h-8 bg-gray-700 rounded animate-pulse"></div>
       </div>
       {/* Navigation skeleton */}
       <nav className="border-b-2 border-black bg-white">
         <div className="container mx-auto py-3 md:py-4 px-3 md:px-4">
-          <div className="flex justify-center space-x-8">
-            {[1, 2, 3, 4].map((i) => (
+          <div className="flex justify-center space-x-2 md:space-x-8 overflow-x-auto">
+            {[1, 2, 3, 4, 5].map((i) => (
               <div
-                key={i}
-                className="h-6 w-16 bg-gray-200 rounded animate-pulse"
+                key={`nav-skeleton-${i}`}
+                className="h-6 w-16 bg-gray-200 rounded animate-pulse flex-shrink-0"
               ></div>
             ))}
           </div>
