@@ -231,3 +231,15 @@ html {
 .navbar-container {
   min-height: 60px;
 }
+
+* {
+  font-family: var(--font-lora);
+}
+
+.font-bokor {
+  font-family: var(--font-bokor);
+}
+
+.font-lora {
+  font-family: var(--font-lora);
+}

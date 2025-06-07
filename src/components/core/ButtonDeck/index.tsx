@@ -27,7 +27,7 @@ export default function ButtonDeck() {
         setTimeout(() => setShareMessage(""), 3000); // Clear message after 3 seconds
       }
     } catch (err) {
-      setShareMessage("Failed to share. Please try again.");
+      setShareMessage(`Failed to share. Please try again. ${err}`);
       setTimeout(() => setShareMessage(""), 3000);
     }
   };

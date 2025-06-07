@@ -2,11 +2,10 @@ import SmallAds from "@/components/core/SmallAds";
 import { extractPlainTextFromHTML } from "@/utils/helper/ExtractPlainTextFromHTML";
 import { formatedDate, timeAgo } from "@/utils/helper/FormatedDate";
 import truncateText from "@/utils/helper/TruncateText";
-import { FileType } from "@/utils/helper/TypeHelper";
+import type { FileType } from "@/utils/helper/TypeHelper";
 import Image from "next/image";
 import Link from "next/link";
 import imagePlaceholder from "../../../../public/assets/placeholder-image.jpg";
-import React from "react";
 
 interface Props {
   randomNewsLimit1: any;
@@ -21,138 +20,146 @@ export default async function RandomNewsSection({
   const newsList2 = (randomNewsLimit2.data as any).data;
 
   return (
-    <div className="flex flex-col h-1/3 items-center mt-5 gap-x-3 md:flex-col lg:flex-row">
-      <div className="mb-6 lg:mb-0">
-        {newsList1 &&
-          newsList1.map((item: any) =>
-            item.banner.length > 0 ? (
-              item.banner.map((file: FileType, index: number) => (
-                <div
-                  key={index}
-                  className="relative px-6 md:px-0 w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-lg"
-                >
-                  <Link href={`/berita/${item.id}/${item.slug}`}>
-                    <div className="relative w-full h-[250px] md:h-[400px] md:w-[600px] rounded-lg overflow-hidden">
-                      <Image
-                        src={file.url || imagePlaceholder}
-                        alt={item.slug}
-                        width={800}
-                        height={600}
-                        className="object-cover w-full h-full rounded-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none z-[1]" />
-                      <div className="absolute bottom-0 left-0 p-3 text-white transition-transform duration-300 ease-in-out group-hover:scale-95 z-[2]">
-                        <div className="mb-1 flex items-center text-xs font-medium text-white/90">
-                          <span>{item.created_by.username}</span>
-                          <span className="mx-1">|</span>
-                          <span>
-                            {formatedDate(item.created_at) || "xxxx, xx-xx"}
-                          </span>
-                        </div>
-                        <h3 className="font-bold leading-tight">
-                          {item.title || "News Title"}
-                        </h3>
-                        <div className="mt-1 text-xs text-white/70">
-                          {timeAgo(item.created_at) || "xxxx, xx-xx"}
-                        </div>
-                      </div>
-                    </div>
-                  </Link>
-                </div>
-              ))
-            ) : (
-              <div
-                key={item.id}
-                className="relative w-100 container md:w-full overflow-hidden bg-cover bg-no-repeat group rounded-lg"
-              >
+    <div className="container mx-auto px-4 lg:px-0 mt-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 lg:gap-8">
+        {/* Featured News - Large Image */}
+        <div className="lg:col-span-5">
+          {newsList1 &&
+            newsList1.map((item: any, itemIndex: number) => (
+              <div key={itemIndex} className="group">
                 <Link href={`/berita/${item.id}/${item.slug}`}>
-                  <div className="relative w-full h-[250px] md:h-[400px] md:w-[600px] rounded-lg overflow-hidden">
-                    <Image
-                      src={imagePlaceholder}
-                      alt={item.slug}
-                      width={800}
-                      height={600}
-                      className="object-cover w-full h-full rounded-lg transition-transform duration-300 ease-in-out group-hover:scale-110 cursor-pointer"
-                    />
-                    <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-black/10 to-transparent pointer-events-none z-[1]" />
-                    <div className="absolute bottom-0 left-0 p-3 text-white transition-transform duration-300 ease-in-out group-hover:scale-95 z-[2]">
-                      <div className="mb-1 flex items-center text-xs font-medium text-white/90">
+                  <div className="relative w-full h-64 sm:h-80 lg:h-96 rounded-lg overflow-hidden cursor-pointer">
+                    {item.banner.length > 0 ? (
+                      item.banner.map((file: FileType, fileIndex: number) => (
+                        <Image
+                          key={fileIndex}
+                          src={
+                            file.url || imagePlaceholder || "/placeholder.svg"
+                          }
+                          alt={item.slug || "News image"}
+                          fill
+                          sizes="(max-width: 1024px) 100vw, 42vw"
+                          className="object-cover rounded-lg transition-transform duration-300 ease-in-out group-hover:scale-110"
+                        />
+                      ))
+                    ) : (
+                      <Image
+                        src={imagePlaceholder || "/placeholder.svg"}
+                        alt={item.slug || "News image"}
+                        fill
+                        sizes="(max-width: 1024px) 100vw, 42vw"
+                        className="object-cover rounded-lg transition-transform duration-300 ease-in-out group-hover:scale-110"
+                      />
+                    )}
+
+                    {/* Gradient Overlay */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-black/20 to-transparent pointer-events-none z-10" />
+
+                    {/* Content Overlay */}
+                    <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 text-white z-20">
+                      <div className="mb-2 flex items-center text-xs sm:text-sm font-medium text-white/90">
                         <span>
                           {item.created_by.username || "Warung Jurnalis"}
                         </span>
-                        <span className="mx-1">|</span>
+                        <span className="mx-2">|</span>
                         <span>
                           {formatedDate(item.created_at) || "xxxx, xx-xx"}
                         </span>
                       </div>
-                      <h3 className="font-bold leading-tight">
+                      <h3 className="text-lg sm:text-xl lg:text-2xl font-bold leading-tight mb-2 line-clamp-2">
                         {item.title || "News Title"}
                       </h3>
-                      <div className="mt-1 text-xs text-white/70">
+                      <div className="text-xs sm:text-sm text-white/80">
                         {timeAgo(item.created_at) || "xxxx, xx-xx"}
                       </div>
                     </div>
                   </div>
                 </Link>
               </div>
-            )
-          )}
-      </div>
-      <div className="px-3">
-        {newsList2 &&
-          newsList2.map((item: any, index: number) => (
-            <div
-              key={index}
-              className={`group flex flex-col items-start bg-white md:flex-row md:justify-between md:max-w-lg dark:border-gray-700 dark:bg-gray-800 dark:hover:bg-gray-700 pb-4 ${
-                index === 0 ? "border-b-1 border-black mb-2" : "border-0"
-              }`}
-            >
-              <div className="flex flex-col justify-between pe-4 leading-normal">
-                <Link href={`/berita/${item.id}/${item.slug}`}>
-                  <h5 className="text-lg md:text-xl max-w-lg font-bold tracking-tight text-gray-900 dark:text-white cursor-pointer group-hover:text-gray-500 transition-colors duration-200">
-                    {truncateText(item.title, 100)}
-                  </h5>
-                </Link>
-                <p className="text-xs text-black/70 mb-2">
-                  {timeAgo(item.created_at)}
-                </p>
-                <p className="mb-2 text-sm font-medium text-primary">
-                  {truncateText(extractPlainTextFromHTML(item.body), 100)}
-                </p>
-                <div className="text-xs text-muted-foreground">
-                  Oleh: {item.created_by.username}
+            ))}
+        </div>
+
+        {/* News List */}
+        <div className="lg:col-span-4">
+          <div className="space-y-6">
+            {newsList2 &&
+              newsList2.map((item: any, index: number) => (
+                <div
+                  key={index}
+                  className={`group bg-white rounded-lg border border-gray-100 hover:shadow-md transition-shadow duration-300 overflow-hidden ${
+                    index === 0 ? "border-b-2" : ""
+                  }`}
+                >
+                  <div className="p-4">
+                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                      {/* Content */}
+                      <div className="sm:col-span-2 space-y-3">
+                        <Link href={`/berita/${item.id}/${item.slug}`}>
+                          <h5 className="text-base sm:text-lg font-bold leading-tight text-gray-900 cursor-pointer group-hover:text-gray-600 transition-colors duration-200 line-clamp-2">
+                            {item.title}
+                          </h5>
+                        </Link>
+
+                        <div className="text-xs text-black/70">
+                          {timeAgo(item.created_at)}
+                        </div>
+
+                        <p className="text-sm text-gray-700 leading-relaxed line-clamp-2">
+                          {truncateText(
+                            extractPlainTextFromHTML(item.body),
+                            100
+                          )}
+                        </p>
+
+                        <div className="text-xs text-muted-foreground">
+                          Oleh: {item.created_by.username}
+                        </div>
+                      </div>
+
+                      {/* Image */}
+                      <div className="sm:col-span-1">
+                        <Link href={`/berita/${item.id}/${item.slug}`}>
+                          <div className="relative w-full h-32 sm:h-24 lg:h-28 rounded-lg overflow-hidden cursor-pointer">
+                            {item.banner.length > 0 ? (
+                              item.banner.map(
+                                (file: FileType, fileIndex: number) => (
+                                  <Image
+                                    key={fileIndex}
+                                    src={
+                                      file.url ||
+                                      imagePlaceholder ||
+                                      "/placeholder.svg"
+                                    }
+                                    alt={item.slug || "News image"}
+                                    fill
+                                    sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+                                    className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                                  />
+                                )
+                              )
+                            ) : (
+                              <Image
+                                src={imagePlaceholder || "/placeholder.svg"}
+                                alt={item.slug || "News image"}
+                                fill
+                                sizes="(max-width: 640px) 100vw, (max-width: 1024px) 33vw, 25vw"
+                                className="object-cover rounded-lg group-hover:scale-105 transition-transform duration-300"
+                              />
+                            )}
+                          </div>
+                        </Link>
+                      </div>
+                    </div>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-end w-50 md:w-[500px] md:h-[120px] md:px-0">
-                {item.banner.length > 0 ? (
-                  item.banner.map((file: FileType, index: number) => (
-                    <Link key={index} href={`/berita/${item.id}/${item.slug}`}>
-                      <Image
-                        src={file.url || imagePlaceholder}
-                        alt={item.slug}
-                        width={500}
-                        height={300}
-                        className="object-cover rounded-lg w-60 h-25 md:w-[220px] md:h-[120px] group-hover:scale-105 cursor-pointer tr ansition-transform duration-300"
-                      />
-                    </Link>
-                  ))
-                ) : (
-                  <Link key={index} href={`/berita/${item.id}/${item.slug}`}>
-                    <Image
-                      src={imagePlaceholder}
-                      alt={item.slug}
-                      width={500}
-                      height={300}
-                      className="object-cover rounded-lg w-60 h-25 md:w-[220px] md:h-[120px] group-hover:scale-105 cursor-pointer tr ansition-transform duration-300"
-                    />
-                  </Link>
-                )}
-              </div>
-            </div>
-          ))}
-      </div>
-      <div className="w-full px-5 md:px-0 md:mx-0 md:ms-5 ">
-        <SmallAds />
+              ))}
+          </div>
+        </div>
+
+        {/* Advertisement Sidebar */}
+        <div className="lg:col-span-3">
+          <SmallAds />
+        </div>
       </div>
     </div>
   );
