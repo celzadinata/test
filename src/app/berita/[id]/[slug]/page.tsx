@@ -39,7 +39,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const title = newsDetail.data?.title || "Berita";
   const body = extractPlainTextFromHTML(newsDetail.data?.body || "");
   const description = body.slice(0, 150) + "...";
-  const image = newsDetail.data?.banner?.[0]?.url || "/default-thumbnail.jpg";
+  const image = newsDetail.data?.slug + ".jpg" || "/default-thumbnail.jpg";
 
   return {
     title,
@@ -48,12 +48,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
       title,
       description,
       type: "article",
-      images: [      {
-        url: image,
-        width: 1200,
-        height: 768,
-        alt: title,
-      },],
+      images: [image],
     },
     twitter: {
       card: "summary_large_image",
