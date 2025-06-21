@@ -273,7 +273,7 @@ export default function Navbar() {
   return (
     <header className="flex flex-col w-full sticky top-0 z-50 will-change-transform">
       {/* Top bar */}
-      <div className="bg-black text-white py-3 md:py-4 px-3 md:px-6 flex items-center justify-between relative">
+      <div className="text-white py-3 md:py-4 px-3 md:px-6 flex items-center justify-between relative" style={{backgroundColor: '#2E2E2E'}}>
         {/* Search section - only visible on desktop */}
         <div className="hidden md:flex items-center relative">
           {!isSearchOpen ? (
